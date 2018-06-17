@@ -1,0 +1,52 @@
+[MASTER]
+
+# Use multiple processes to speed up Pylint.
+jobs=0
+
+
+[REPORTS]
+
+# Tells whether to display a full report or only the messages
+reports=yes
+
+
+[REFACTORING]
+
+# Maximum number of nested blocks for function / method body
+max-nested-blocks=10
+
+
+[BASIC]
+
+# Good variable names which should always be accepted, separated by a comma
+good-names=e,i,j,k,_
+
+
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=79
+
+# List of optional constructs for which whitespace checking is disabled. `dict-
+# separator` is used to allow tabulation in dicts, etc.: {1  : 1,\n222: 2}.
+# `trailing-comma` allows a space between comma and closing bracket: (a, ).
+# `empty-line` allows space-only lines.
+no-space-check=
+
+
+[DESIGN]
+
+# Maximum number of arguments for function / method
+max-args=7
+
+# Maximum number of branch for function / method body
+max-branches=30
+
+# Maximum number of locals for function / method body
+max-locals=25
+
+# Maximum number of return / yield for function / method body
+max-returns=20
+
+# Maximum number of statements in function / method body
+max-statements=100
