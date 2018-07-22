@@ -4,7 +4,7 @@ BSicons bot
     :alt: Build status
     :target: https://travis-ci.org/JJMC89/bsiconsbot
 
-This bot package is used on Wikimedia_ projects to manage BSicons_.
+This package is used to manage BSicons_ on Wikimedia_ projects.
 
 .. _BSicons:   https://commons.wikimedia.org/wiki/BSicon
 .. _Wikimedia: https://www.wikimedia.org/
