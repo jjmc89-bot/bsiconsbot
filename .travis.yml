@@ -10,4 +10,4 @@ install:
     - python setup.py install
     - pip install pylint
 script:
-    - pylint scripts
+    - pylint bsiconsbot scripts
