@@ -24,6 +24,7 @@ The following arguments are supported:
 import copy
 import re
 import mwparserfromhell
+from mwparserfromhell.nodes import Tag
 import pywikibot
 from pywikibot import pagegenerators
 from pywikibot.bot import (MultipleSitesBot, FollowRedirectPageBot,
@@ -284,6 +285,7 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
         text = self.replace_file_links(text)
         text = bsiconsbot.textlib.mask_pipe_mw(text)
         wikicode = mwparserfromhell.parse(text, skip_style_tags=True)
+        self.replace_gallery_files(wikicode)
         self.replace_template_files(wikicode)
         self.put_current(
             bsiconsbot.textlib.unmask_text(str(wikicode), mask),
@@ -321,6 +323,38 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
                 self.current_page.replacements.add(Replacement(current_icon,
                                                                new_icon))
         return text
+
+    def replace_gallery_files(self, wikicode):
+        """
+        Replaces files in <gallery>.
+
+        @param wikicode: Parsed wikitext
+        @type wikicode: L{mwparserfromhell.wikicode.Wikicode}
+        """
+        if not hasattr(self.current_page, 'replacements'):
+            self.current_page.replacements = set()
+        for tag in wikicode.ifilter(forcetype=Tag):
+            if tag.tag.lower() != 'gallery':
+                continue
+            lines = str(tag.contents).splitlines()
+            for i, line in enumerate(lines):
+                title, sep, caption = removeDisabledParts(line).partition('|')
+                if not title:
+                    continue
+                try:
+                    current_icon = bsiconsbot.page.BSiconPage(
+                        self.current_page.site, title)
+                    current_icon.title()
+                except (pywikibot.Error, ValueError):
+                    continue
+                new_icon = self.getOption('bsicons_map').get(current_icon,
+                                                             None)
+                if new_icon:
+                    lines[i] = new_icon.title() + sep + caption
+                    self.current_page.replacements.add(Replacement(
+                        current_icon, new_icon))
+            if self.current_page.replacements:
+                tag.contents = '\n'.join(lines) + '\n'
 
     def replace_template_files(self, wikicode):
         """
