@@ -528,6 +528,7 @@ def main(*args):
             pywikibot.warning(e)
             continue
         pages = pages.union(page.globalusage())
+        pages = pages.union(page.usingPages()) # T199398
     for key, value in options['config'].pop('replacement_map',
                                             dict()).items():
         # Both must be BSicons.
@@ -538,6 +539,7 @@ def main(*args):
             pywikibot.warning(e)
             continue
         pages = pages.union(page.globalusage())
+        pages = pages.union(page.usingPages()) # T199398
     options['bsicons_map'] = bsicons_map
     gen = (page for page in pages)
     gen = pagegenerators.PreloadingGenerator(gen)
