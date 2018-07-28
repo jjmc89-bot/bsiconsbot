@@ -18,8 +18,6 @@ The following parameters are supported:
 -changes_date     The table of changes is added for this date. The default
                   is yesterday.
 
--changes_summary  Edit summary to use when updating the file changes table
-
 -changes_page_prefix Title prefix of the page to save the file changes
 
 -redirects_page   Title of the page to save the redirects list
@@ -71,9 +69,9 @@ def validate_options(options):
     """
     result = True
     pywikibot.log('Options:')
-    required_keys = ['changes_date', 'changes_summary', 'changes_page_prefix',
-                     'enabled', 'list_summary', 'large_page', 'large_size',
-                     'redirects_page', 'logs_page_prefix', 'logs_summary']
+    required_keys = ['changes_date', 'changes_page_prefix', 'enabled',
+                     'list_summary', 'large_page', 'large_size',
+                     'redirects_page', 'logs_page_prefix']
     has_keys = list()
     if 'changes_date' in options:
         value = options['changes_date']
@@ -94,8 +92,7 @@ def validate_options(options):
         pywikibot.log('-{} = {}'.format(key, value))
         if key in required_keys:
             has_keys.append(key)
-        if key in ('changes_summary', 'list_summary', 'logs_page_prefix',
-                   'logs_summary'):
+        if key in ('list_summary', 'logs_page_prefix'):
             if not isinstance(value, str):
                 result = False
         elif key == 'changes_page_prefix':
@@ -359,10 +356,8 @@ def main(*args):
     options = {
         'enabled': False,
         'changes_date': date.today() - timedelta(days=1),
-        'changes_summary': 'Updating changes',
         'large_size': 1000,
-        'list_summary': 'Updating list',
-        'logs_summary': 'Updating log'
+        'list_summary': 'Updating list'
     }
     local_args = pywikibot.handle_args(args)
     options['site'] = pywikibot.Site()
@@ -373,10 +368,9 @@ def main(*args):
             continue
         arg, _, value = arg.partition(':')
         arg = arg[1:]
-        if arg in ('config', 'changes_date', 'changes_summary',
-                   'changes _page_prefix', 'redirects_page', 'large_size',
-                   'large_page', 'list_summary', 'logs_page_prefix',
-                   'logs_summary'):
+        if arg in ('config', 'changes_date', 'changes _page_prefix',
+                   'redirects_page', 'large_size', 'large_page',
+                   'list_summary', 'logs_page_prefix'):
             if not value:
                 value = pywikibot.input(
                     'Please enter a value for {}'.format(arg),
