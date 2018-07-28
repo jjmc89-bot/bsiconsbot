@@ -9,7 +9,7 @@ def readme():
 setup(
     author='JJMC89',
     classifiers=[
-        'Development Status :: 1 - Planning',
+        'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Intended Audience :: Other Audience',
         'License :: OSI Approved :: MIT License',
