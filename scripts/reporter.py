@@ -92,20 +92,8 @@ def validate_options(options):
         pywikibot.log('-{} = {}'.format(key, value))
         if key in required_keys:
             has_keys.append(key)
-        if key in ('list_summary', 'logs_page_prefix'):
+        if key in ('changes_page_prefix', 'list_summary', 'logs_page_prefix'):
             if not isinstance(value, str):
-                result = False
-        elif key == 'changes_page_prefix':
-            if isinstance(value, str):
-                changes_page = pywikibot.Page(
-                    options['site'],
-                    '{prefix}/{subpage}'.format(
-                        prefix=value,
-                        subpage=options['changes_date'].strftime('%Y-%m')
-                    )
-                )
-                changes_page = get_page_from_size(changes_page)
-            else:
                 result = False
         elif key == 'enabled':
             if not isinstance(value, bool):
@@ -124,7 +112,6 @@ def validate_options(options):
                 result = False
     if sorted(has_keys) != sorted(required_keys):
         result = False
-    options['changes_page'] = changes_page
     return result
 
 
@@ -144,7 +131,7 @@ def save_list(page_list, page, summary):
         list_text += '\n# {}'.format(item.title(asLink=True, textlink=True))
     try:
         page.save_bot_start_end(list_text, summary=summary, force=True)
-    except pywikibot.Error as e:
+    except Exception as e: # pylint: disable=broad-except
         pywikibot.exception(e, tb=True)
 
 
@@ -204,7 +191,7 @@ def output_log(logtype=None, options=None, bsicon_template_title='bsq2'):
         log_page.save(text=log_text, section='new',
                       summary=options['changes_date'].isoformat(),
                       minor=False, force=True)
-    except pywikibot.Error as e:
+    except Exception as e: # pylint: disable=broad-except
         pywikibot.exception(e, tb=True)
 
 
@@ -282,7 +269,7 @@ def output_move_log(options=None):
         log_page.save(text=log_text, section='new',
                       summary=options['changes_date'].isoformat(),
                       minor=False, force=True)
-    except pywikibot.Error as e:
+    except Exception as e: # pylint: disable=broad-except
         pywikibot.exception(e, tb=True)
 
 
@@ -293,15 +280,27 @@ def output_changes_lists(options=None):
     @param options: Validated options
     @type options: dict
     """
-    file_changes = ''
-    file_redirects = set()
-    large_files = set()
-    if not options['changes_page'].exists():
+    changes_page = pywikibot.Page(
+        options['site'],
+        '{prefix}/{subpage}'.format(
+            prefix=options['changes_page_prefix'],
+            subpage=options['changes_date'].strftime('%Y-%m')
+        )
+    )
+    if options['changes_date'].isoformat() in get_headers(changes_page.text):
+        return
+    changes_page = get_page_from_size(changes_page)
+    if options['changes_date'].isoformat() in get_headers(changes_page.text):
+        return
+    if not changes_page.exists():
         options['changes_page'].save(
             text='{{{{nobots}}}}{{{{{prefix}}}}}'.format(
                 prefix=options['changes_page_prefix']),
             summary='Create changes page'
         )
+    file_changes = ''
+    file_redirects = set()
+    large_files = set()
     for file in pagegenerators.PrefixingPageGenerator('File:BSicon_'):
         if not file.exists():
             continue
@@ -338,7 +337,7 @@ def output_changes_lists(options=None):
                                      summary=options['changes_date']
                                      .isoformat(),
                                      minor=False, force=True)
-    except pywikibot.Error as e:
+    except Exception as e: # pylint: disable=broad-except
         pywikibot.exception(e, tb=True)
     save_list(file_redirects, options['redirects_page'],
               summary=options['list_summary'])
