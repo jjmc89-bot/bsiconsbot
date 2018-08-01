@@ -100,9 +100,9 @@ def validate_options(options):
                 result = False
             elif value is not True:
                 sys.exit('Task disabled.')
-        elif key in 'large_page' 'redirects_page':
+        elif key in ('large_page', 'redirects_page'):
             if isinstance(value, str):
-                options[key] = pywikibot.Page(options['site'], value)
+                options[key] = bsiconsbot.page.Page(options['site'], value)
             else:
                 result = False
         elif key == 'large_size':
@@ -333,10 +333,9 @@ def output_changes_lists(options=None):
     else:
         file_changes = ': No changes'
     try:
-        options['changes_page'].save(text=file_changes, section='new',
-                                     summary=options['changes_date']
-                                     .isoformat(),
-                                     minor=False, force=True)
+        changes_page.save(text=file_changes, section='new',
+                          summary=options['changes_date'].isoformat(),
+                          minor=False, force=True)
     except Exception as e: # pylint: disable=broad-except
         pywikibot.exception(e, tb=True)
     save_list(file_redirects, options['redirects_page'],
