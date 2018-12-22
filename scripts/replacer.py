@@ -236,7 +236,7 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
             site.login()
         page = pywikibot.Page(
             site,
-            'User:{username}/shutoff/{class_name}.css'.format(
+            'User:{username}/shutoff/{class_name}.json'.format(
                 username=site.user(),
                 class_name=self.__class__.__name__
             )
