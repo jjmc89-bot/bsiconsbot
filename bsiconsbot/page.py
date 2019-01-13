@@ -135,6 +135,14 @@ class BSiconPage(Page, pywikibot.FilePage):
                 and title.endswith(self.__class__.suffix)):
             raise ValueError('{} is not a BSicon.'.format(self))
 
+    def __eq__(self, other):
+        """Test if two BSicons are equal."""
+        return self.name == other.name
+
+    def __hash__(self):
+        """A stable identifier to be used as a key in hash tables."""
+        return hash(self.name)
+
     @property
     def name(self):
         """BSicon name."""
