@@ -9,13 +9,12 @@ def readme():
 setup(
     author='JJMC89',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Other Audience',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Wiki',
@@ -41,5 +40,5 @@ setup(
         'Bug tracker': 'https://github.com/JJMC89/bsiconsbot/issues',
         'Source code': 'https://github.com/JJMC89/bsiconsbot',
     },
-    version='0.1.dev1',
+    version='0.1.dev2',
 )
