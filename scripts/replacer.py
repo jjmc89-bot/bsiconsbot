@@ -442,7 +442,7 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
                                   .format(new_icon))
                     continue
             else:
-                replacement = new_icon
+                replacement = new_icon.name
             param.value = str(param.value).replace(param_value,
                                                    replacement)
             self.current_page.replacements.add(Replacement(current_icon,
