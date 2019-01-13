@@ -293,7 +293,7 @@ def output_changes_lists(options=None):
     if options['changes_date'].isoformat() in get_headers(changes_page.text):
         return
     if not changes_page.exists():
-        options['changes_page'].save(
+        changes_page.save(
             text='{{{{nobots}}}}{{{{{prefix}}}}}'.format(
                 prefix=options['changes_page_prefix']),
             summary='Create changes page'
