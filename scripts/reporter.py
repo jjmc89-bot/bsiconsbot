@@ -299,8 +299,6 @@ def output_changes_lists(options=None):
             summary='Create changes page'
         )
     file_changes = ''
-    file_redirects = set()
-    large_files = set()
     for file in pagegenerators.PrefixingPageGenerator('File:BSicon_'):
         if not file.exists():
             continue
@@ -315,15 +313,6 @@ def output_changes_lists(options=None):
                 '{r.user} || <nowiki>{r.comment}</nowiki>'
                 .format(name=file.name, r=rev.hist_entry())
             )
-        if file.isRedirectPage():
-            file_redirects.add(file)
-        else:
-            try:
-                size = file.site.loadimageinfo(file)['size']
-                if size > options['large_size']:
-                    large_files.add(file)
-            except (ValueError, pywikibot.PageRelatedError) as e:
-                pywikibot.exception(e, tb=True)
     if file_changes:
         file_changes = (
             '{{| class="wikitable sortable mw-collapsible mw-collapsed"'
@@ -338,10 +327,6 @@ def output_changes_lists(options=None):
                           minor=False, force=True)
     except Exception as e: # pylint: disable=broad-except
         pywikibot.exception(e, tb=True)
-    save_list(file_redirects, options['redirects_page'],
-              summary=options['list_summary'])
-    save_list(large_files, options['large_page'],
-              summary=options['list_summary'])
 
 
 def main(*args):
@@ -394,6 +379,34 @@ def main(*args):
     output_log(logtype='delete', options=options, bsicon_template_title='bsn')
     output_move_log(options=options)
     output_changes_lists(options=options)
+    file_redirects = pagegenerators.MySQLPageGenerator(
+        'select page_namespace, page_title '
+        'from page '
+        'where page_namespace = 6 '
+        'and page_title like "{prefix}%{suffix}" '
+        'and page_is_redirect = 1 '
+        'order by page_title'.format(
+            prefix=bsiconsbot.page.BSiconPage.PREFIX,
+            suffix=bsiconsbot.page.BSiconPage.SUFFIX
+        ),
+        site=options['site']
+    )
+    save_list(file_redirects, options['redirects_page'],
+              summary=options['list_summary'])
+    large_files = pagegenerators.MySQLPageGenerator(
+        'select 6, img_name '
+        'from image '
+        'where img_name like "{prefix}%{suffix}" '
+        'and img_size > {large_size} '
+        'order by img_name'.format(
+            prefix=bsiconsbot.page.BSiconPage.PREFIX,
+            suffix=bsiconsbot.page.BSiconPage.SUFFIX,
+            large_size=options['large_size']
+        ),
+        site=options['site']
+    )
+    save_list(large_files, options['large_page'],
+              summary=options['list_summary'])
     return True
 
 
