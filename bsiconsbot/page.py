@@ -33,7 +33,7 @@ def get_template_pages(templates):
 class Page(pywikibot.Page):
     """Represents a MediaWiki page."""
 
-    bot_start_end = re.compile(
+    BOT_START_END = re.compile(
         r'^(.*?<!--\s*bot start\s*-->).*?(<!--\s*bot end\s*-->.*)$',
         flags=re.S | re.I
     )
@@ -68,8 +68,8 @@ class Page(pywikibot.Page):
         """
         if self.exists():
             text = text.strip()
-            if self.__class__.bot_start_end.match(self.text):
-                self.text = self.__class__.bot_start_end.sub(
+            if self.BOT_START_END.match(self.text):
+                self.text = self.BOT_START_END.sub(
                     r'\1\n{}\2'.format(text),
                     self.text
                 )
@@ -118,21 +118,21 @@ class Page(pywikibot.Page):
 class BSiconPage(Page, pywikibot.FilePage):
     """Represents a BSicon file description page."""
 
-    prefix = 'BSicon_'
-    suffix = '.svg'
+    PREFIX = 'BSicon_'
+    SUFFIX = '.svg'
 
     def __init__(self, source, title='', name=''):
         """Initializer."""
         if not title and name:
             title = '{prefix}{name}{suffix}'.format(
-                prefix=self.__class__.prefix,
+                prefix=self.PREFIX,
                 name=name,
-                suffix=self.__class__.suffix
+                suffix=self.SUFFIX
             )
         super().__init__(source, title)
         title = self.title(underscore=True, with_ns=False)
-        if not (title.startswith(self.__class__.prefix)
-                and title.endswith(self.__class__.suffix)):
+        if not (title.startswith(self.PREFIX)
+                and title.endswith(self.SUFFIX)):
             raise ValueError('{} is not a BSicon.'.format(self))
 
     def __eq__(self, other):
@@ -147,4 +147,4 @@ class BSiconPage(Page, pywikibot.FilePage):
     def name(self):
         """BSicon name."""
         return (self.title(underscore=True, with_ns=False)
-                [len(self.__class__.prefix):-len(self.__class__.suffix)])
+                [len(self.PREFIX):-len(self.SUFFIX)])
