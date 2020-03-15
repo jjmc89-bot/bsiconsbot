@@ -273,9 +273,9 @@ def output_move_log(options=None):
         pywikibot.exception(e, tb=True)
 
 
-def output_changes_lists(options=None):
+def output_edits(options=None):
     """
-    Writes changes and lists to a page.
+    Writes edits to a page.
 
     @param options: Validated options
     @type options: dict
@@ -299,20 +299,25 @@ def output_changes_lists(options=None):
             summary='Create changes page'
         )
     file_changes = ''
-    for file in pagegenerators.PrefixingPageGenerator('File:BSicon_'):
+    for recent_change in options['site'].recentchanges(
+            start=options['start'], end=options['end'], reverse=True,
+            namespaces=options['site'].namespaces.FILE, changetype='edit|new'):
+        try:
+            file = bsiconsbot.page.BSiconPage(options['site'],
+                                              recent_change['title'])
+        except (KeyError, ValueError):
+            continue
         if not file.exists():
             continue
-        try:
-            file = bsiconsbot.page.BSiconPage(file)
-        except ValueError:
-            continue
-        for rev in file.revisions(starttime=options['start'],
-                                  endtime=options['end'], reverse=True):
-            file_changes += (
-                '\n|-\n| {{{{bsq2|{name}}}}} || {r.revid} || {r.timestamp} || '
-                '{r.user} || <nowiki>{r.comment}</nowiki>'
-                .format(name=file.name, r=rev.hist_entry())
-            )
+        # Fill in placeholders for hidden keys.
+        for prop in ('comment', 'user'):
+            if prop + 'hidden' in recent_change:
+                recent_change[prop] = '({} hidden)'.format(prop)
+        file_changes += (
+            '\n|-\n| {{{{bsq2|{name}}}}} || {rc[revid]} || {rc[timestamp]} || '
+            '{rc[user]} || <nowiki>{rc[comment]}</nowiki>'
+            .format(name=file.name, rc=recent_change)
+        )
     if file_changes:
         file_changes = (
             '{{| class="wikitable sortable mw-collapsible mw-collapsed"'
@@ -371,14 +376,6 @@ def main(*args):
     if not validate_options(options):
         pywikibot.error('Invalid options.')
         return False
-    options['start'] = datetime.datetime.combine(options['changes_date'],
-                                                 time.min)
-    options['end'] = datetime.datetime.combine(options['changes_date'],
-                                               time.max)
-    output_log(logtype='upload', options=options)
-    output_log(logtype='delete', options=options, bsicon_template_title='bsn')
-    output_move_log(options=options)
-    output_changes_lists(options=options)
     file_redirects = pagegenerators.MySQLPageGenerator(
         'select page_namespace, page_title '
         'from page '
@@ -393,6 +390,14 @@ def main(*args):
     )
     save_list(file_redirects, options['redirects_page'],
               summary=options['list_summary'])
+    options['start'] = datetime.datetime.combine(options['changes_date'],
+                                                 time.min)
+    options['end'] = datetime.datetime.combine(options['changes_date'],
+                                               time.max)
+    output_log(logtype='upload', options=options)
+    output_log(logtype='delete', options=options, bsicon_template_title='bsn')
+    output_move_log(options=options)
+    output_edits(options=options)
     large_files = pagegenerators.MySQLPageGenerator(
         'select 6, img_name '
         'from image '
