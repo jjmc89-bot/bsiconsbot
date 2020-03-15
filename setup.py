@@ -40,5 +40,5 @@ setup(
         'Bug tracker': 'https://github.com/JJMC89/bsiconsbot/issues',
         'Source code': 'https://github.com/JJMC89/bsiconsbot',
     },
-    version='0.1.dev2',
+    version='0.1.dev3',
 )
