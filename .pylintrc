@@ -1,7 +1,8 @@
 [MASTER]
 
 # Use multiple processes to speed up Pylint.
-jobs=1
+#jobs=0
+jobs=1 # PyCQA/pylint#3524
 
 
 [REPORTS]
@@ -26,3 +27,8 @@ max-line-length=79
 # `trailing-comma` allows a space between comma and closing bracket: (a, ).
 # `empty-line` allows space-only lines.
 no-space-check=
+
+[SIMILARITIES]
+
+# Minimum lines number of a similarity.
+min-similarity-lines=10 # PyCQA/pylint#214
