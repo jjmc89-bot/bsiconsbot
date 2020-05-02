@@ -26,6 +26,7 @@ The following arguments are supported:
 # License: MIT
 # pylint: disable=too-many-branches
 import copy
+from itertools import chain
 import re
 import mwparserfromhell
 import pywikibot
@@ -59,7 +60,7 @@ def process_options(options, site):
     @rtype: generator
     """
     bsicons_map = dict()
-    pages = set()
+    gen = chain()
     for page in options['config'].pop('redirects'):
         # Must be a redirect, and both must be BSicons.
         try:
@@ -69,8 +70,7 @@ def process_options(options, site):
         except (pywikibot.IsNotRedirectPage, ValueError) as e:
             pywikibot.warning(e)
             continue
-        pages = pages.union(page.globalusage())
-        pages = pages.union(page.usingPages()) # T199398
+        gen = chain(gen, page.globalusage(), page.usingPages()) # T199398
     for key, value in options['config'].pop('replacement_map',
                                             dict()).items():
         # Both must be BSicons.
@@ -80,10 +80,9 @@ def process_options(options, site):
         except ValueError as e:
             pywikibot.warning(e)
             continue
-        pages = pages.union(page.globalusage())
-        pages = pages.union(page.usingPages()) # T199398
+        gen = chain(gen, page.globalusage(), page.usingPages()) # T199398
     options['bsicons_map'] = bsicons_map
-    return (page for page in pages)
+    return gen
 
 
 def validate_config(config, site):
