@@ -20,6 +20,8 @@ The following arguments are supported:
                   value in the object from -config.
                   If not provided, it will be the same as -config.
 
+-transcluded      Also work on pages transcluded into the pages with BSicons.
+
 &params;
 """
 # Author : JJMC89
@@ -83,6 +85,24 @@ def process_options(options, site):
         gen = chain(gen, page.globalusage(), page.usingPages()) # T199398
     options['bsicons_map'] = bsicons_map
     return gen
+
+
+def transcluded_add_generator(generator):
+    """
+    Add transcluded pages for pages from another generator.
+
+    @param generator: Pages to iterate over
+    @type generator: iterable
+
+    @rtype: generator
+    """
+    seen = set()
+    for page in generator:
+        yield page
+        for tpl in page.itertemplates():
+            if tpl not in seen:
+                seen.add(tpl)
+                yield tpl
 
 
 def validate_config(config, site):
@@ -529,7 +549,9 @@ def main(*args):
     @param args: command line arguments
     @type args: list of unicode
     """
-    options = {}
+    options = {
+        'transcluded': False
+    }
     local_args = pywikibot.handle_args(args)
     site = pywikibot.Site()
     site.login()
@@ -560,6 +582,8 @@ def main(*args):
         pywikibot.error('Invalid config.')
         return False
     gen = process_options(options, site)
+    if options.pop('transcluded'):
+        gen = transcluded_add_generator(gen)
     gen = gen_factory.getCombinedGenerator(gen=gen, preload=True)
     BSiconsReplacer(gen, **options).run()
     return True
