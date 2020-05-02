@@ -13,10 +13,14 @@ The following arguments are required:
 
 The following arguments are supported:
 
+-always           Don't prompt to save changes.
+
 -local_config     The page title that has the JSON config (object).
                   Any value in the object will overwrite the corresponding
                   value in the object from -config.
                   If not provided, it will be the same as -config.
+
+&params;
 """
 # Author : JJMC89
 # License: MIT
@@ -33,6 +37,9 @@ import bsiconsbot.page
 import bsiconsbot.textlib
 
 
+docuReplacements = { #pylint: disable=invalid-name
+    '&params;': pagegenerators.parameterHelp
+}
 HTML_COMMENT = re.compile(r'<!--.*?-->', flags=re.S)
 ROUTEMAP_BSICON = re.compile(
     r'(?=((?:\n|! !|!~|\\)[ \t]*)((?:[^\\~\n]|~(?!~))+?)([ \t]*'
@@ -554,7 +561,7 @@ def main(*args):
         pywikibot.error('Invalid config.')
         return False
     gen = process_options(options, site)
-    gen = pagegenerators.PreloadingGenerator(gen)
+    gen = gen_factory.getCombinedGenerator(gen=gen, preload=True)
     BSiconsReplacer(gen, **options).run()
     return True
 
