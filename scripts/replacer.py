@@ -24,7 +24,6 @@ The following arguments are supported:
 import copy
 import re
 import mwparserfromhell
-from mwparserfromhell.nodes import Tag
 import pywikibot
 from pywikibot import pagegenerators
 from pywikibot.bot import (MultipleSitesBot, FollowRedirectPageBot,
@@ -65,7 +64,7 @@ def validate_config(config, site):
             elif not isinstance(value, list):
                 pywikibot.log('Invalid type.')
                 return False
-        pywikibot.log('\u2192{} = {}'.format(key, value))
+        pywikibot.log('\u2192{} = {}'.format(key, config[key]))
     if sorted(has_keys) != sorted(required_keys):
         pywikibot.log('Missing one more required keys.')
         return False
@@ -275,7 +274,7 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
         if page.namespace().id in {2, 3}:
             pywikibot.warning('{} is in userspace.'.format(page))
             return True
-        return super().skip_page(page) # pylint: disable=no-member
+        return super().skip_page(page)
 
     def treat_page(self):
         """Process one page."""
@@ -333,7 +332,7 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
         """
         if not hasattr(self.current_page, 'replacements'):
             self.current_page.replacements = set()
-        for tag in wikicode.ifilter(forcetype=Tag):
+        for tag in wikicode.ifilter_tags():
             if tag.tag.lower() != 'gallery':
                 continue
             lines = str(tag.contents).splitlines()
