@@ -40,6 +40,45 @@ ROUTEMAP_BSICON = re.compile(
 )
 
 
+def process_options(options, site):
+    """
+    Process the options and return a generator of pages to work on.
+
+    @param options: options to process
+    @type options: dict
+    @param site: site used during processing
+    @type site: L{pywikibot.Site}
+
+    @rtype: generator
+    """
+    bsicons_map = dict()
+    pages = set()
+    for page in options['config'].pop('redirects'):
+        # Must be a redirect, and both must be BSicons.
+        try:
+            page = bsiconsbot.page.BSiconPage(page)
+            bsicons_map[page] = bsiconsbot.page.BSiconPage(
+                page.getRedirectTarget())
+        except (pywikibot.IsNotRedirectPage, ValueError) as e:
+            pywikibot.warning(e)
+            continue
+        pages = pages.union(page.globalusage())
+        pages = pages.union(page.usingPages()) # T199398
+    for key, value in options['config'].pop('replacement_map',
+                                            dict()).items():
+        # Both must be BSicons.
+        try:
+            page = bsiconsbot.page.BSiconPage(site, key)
+            bsicons_map[page] = bsiconsbot.page.BSiconPage(site, value)
+        except ValueError as e:
+            pywikibot.warning(e)
+            continue
+        pages = pages.union(page.globalusage())
+        pages = pages.union(page.usingPages()) # T199398
+    options['bsicons_map'] = bsicons_map
+    return (page for page in pages)
+
+
 def validate_config(config, site):
     """
     Validate the config and return bool.
@@ -514,33 +553,7 @@ def main(*args):
     else:
         pywikibot.error('Invalid config.')
         return False
-
-    bsicons_map = dict()
-    pages = set()
-    for page in options['config'].pop('redirects'):
-        # Must be a redirect, and both must be BSicons.
-        try:
-            page = bsiconsbot.page.BSiconPage(page)
-            bsicons_map[page] = bsiconsbot.page.BSiconPage(
-                page.getRedirectTarget())
-        except (pywikibot.IsNotRedirectPage, ValueError) as e:
-            pywikibot.warning(e)
-            continue
-        pages = pages.union(page.globalusage())
-        pages = pages.union(page.usingPages()) # T199398
-    for key, value in options['config'].pop('replacement_map',
-                                            dict()).items():
-        # Both must be BSicons.
-        try:
-            page = bsiconsbot.page.BSiconPage(site, key)
-            bsicons_map[page] = bsiconsbot.page.BSiconPage(site, value)
-        except ValueError as e:
-            pywikibot.warning(e)
-            continue
-        pages = pages.union(page.globalusage())
-        pages = pages.union(page.usingPages()) # T199398
-    options['bsicons_map'] = bsicons_map
-    gen = (page for page in pages)
+    gen = process_options(options, site)
     gen = pagegenerators.PreloadingGenerator(gen)
     BSiconsReplacer(gen, **options).run()
     return True
