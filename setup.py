@@ -22,10 +22,6 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Wiki',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
-    dependency_links=[
-        'https://github.com/earwig/mwparserfromhell/tarball/master#egg=mwparserfromhell',
-        'https://github.com/wikimedia/pywikibot/tarball/master#egg=pywikibot'
-    ],
     description='BSicons bot',
     download_url='https://github.com/JJMC89/bsiconsbot',
     include_package_data=True,
