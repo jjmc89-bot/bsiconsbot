@@ -4,6 +4,12 @@
 jobs=0
 
 
+[MESSAGES CONTROL]
+
+# Disable the message, report, category or checker with the given id.
+disable=duplicate-code
+
+
 [REPORTS]
 
 # Tells whether to display a full report or only the messages
