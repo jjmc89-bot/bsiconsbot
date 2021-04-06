@@ -6,6 +6,7 @@ This module extends pywikibot.page.
 """
 import json
 import re
+
 import pywikibot
 
 
@@ -34,8 +35,8 @@ class Page(pywikibot.Page):
     """Represents a MediaWiki page."""
 
     BOT_START_END = re.compile(
-        r'^(.*?<!--\s*bot start\s*-->).*?(<!--\s*bot end\s*-->.*)$',
-        flags=re.S | re.I
+        r"^(.*?<!--\s*bot start\s*-->).*?(<!--\s*bot end\s*-->.*)$",
+        flags=re.S | re.I,
     )
 
     def get_json(self, **kwargs):
@@ -45,17 +46,17 @@ class Page(pywikibot.Page):
         @rtype: dict
         """
         if self.isRedirectPage():
-            pywikibot.log('{} is a redirect.'.format(self.title()))
+            pywikibot.log("{} is a redirect.".format(self.title()))
             page = self.getRedirectTarget()
         else:
             page = self
         if not page.exists():
-            pywikibot.log('{} does not exist.'.format(page.title()))
+            pywikibot.log("{} does not exist.".format(page.title()))
             return dict()
         try:
             return json.loads(page.get(**kwargs).strip())
         except ValueError:
-            pywikibot.error('{} does not contain valid JSON.'.format(page))
+            pywikibot.error("{} does not contain valid JSON.".format(page))
             raise
         except pywikibot.PageRelatedError:
             return dict()
@@ -70,15 +71,15 @@ class Page(pywikibot.Page):
             text = text.strip()
             if self.BOT_START_END.match(self.text):
                 self.text = self.BOT_START_END.sub(
-                    r'\1\n{}\2'.format(text),
-                    self.text
+                    r"\1\n{}\2".format(text), self.text
                 )
             else:
                 self.text = text
             self.save(minor=minor, botflag=botflag, **kwargs)
         else:
-            pywikibot.error('{} does not exist. Skipping.'
-                            .format(self.title()))
+            pywikibot.error(
+                "{} does not exist. Skipping.".format(self.title())
+            )
 
     def title_regex(self, **kwargs):
         """
@@ -88,12 +89,12 @@ class Page(pywikibot.Page):
         """
         title = self.title(underscore=True, **kwargs)
         title = re.escape(title)
-        title = title.replace('_', '[ _]+')
-        if self.site.siteinfo['case'] == 'first-letter':
+        title = title.replace("_", "[ _]+")
+        if self.site.siteinfo["case"] == "first-letter":
             char1 = title[:1]
             if char1.isalpha():
                 # The first letter is not case sensative.
-                char1 = '[{}{}]'.format(char1, char1.swapcase())
+                char1 = "[{}{}]".format(char1, char1.swapcase())
                 title = char1 + title[1:]
         return title
 
@@ -112,28 +113,25 @@ class Page(pywikibot.Page):
         else:
             for redirect in redirects:
                 titles.add(Page(redirect).title_regex(**kwargs))
-        return '|'.join(titles)
+        return "|".join(titles)
 
 
 class BSiconPage(Page, pywikibot.FilePage):
     """Represents a BSicon file description page."""
 
-    PREFIX = 'BSicon_'
-    SUFFIX = '.svg'
+    PREFIX = "BSicon_"
+    SUFFIX = ".svg"
 
-    def __init__(self, source, title='', name=''):
+    def __init__(self, source, title="", name=""):
         """Initializer."""
         if not title and name:
-            title = '{prefix}{name}{suffix}'.format(
-                prefix=self.PREFIX,
-                name=name,
-                suffix=self.SUFFIX
+            title = "{prefix}{name}{suffix}".format(
+                prefix=self.PREFIX, name=name, suffix=self.SUFFIX
             )
         super().__init__(source, title)
         title = self.title(underscore=True, with_ns=False)
-        if not (title.startswith(self.PREFIX)
-                and title.endswith(self.SUFFIX)):
-            raise ValueError('{} is not a BSicon.'.format(self))
+        if not (title.startswith(self.PREFIX) and title.endswith(self.SUFFIX)):
+            raise ValueError("{} is not a BSicon.".format(self))
 
     def __eq__(self, other):
         """Test if two BSicons are equal."""
@@ -146,5 +144,6 @@ class BSiconPage(Page, pywikibot.FilePage):
     @property
     def name(self):
         """BSicon name."""
-        return (self.title(underscore=True, with_ns=False)
-                [len(self.PREFIX):-len(self.SUFFIX)])
+        return self.title(underscore=True, with_ns=False)[
+            len(self.PREFIX) : -len(self.SUFFIX)
+        ]

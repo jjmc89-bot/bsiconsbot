@@ -28,25 +28,29 @@ The following arguments are supported:
 # License: MIT
 # pylint: disable=too-many-branches
 import copy
-from itertools import chain
 import re
+from itertools import chain
+
 import mwparserfromhell
 import pywikibot
 from pywikibot import pagegenerators
-from pywikibot.bot import (MultipleSitesBot, FollowRedirectPageBot,
-                           ExistingPageBot)
+from pywikibot.bot import (
+    ExistingPageBot,
+    FollowRedirectPageBot,
+    MultipleSitesBot,
+)
 from pywikibot.textlib import removeDisabledParts
+
 import bsiconsbot.page
 import bsiconsbot.textlib
 
-
-docuReplacements = { #pylint: disable=invalid-name
-    '&params;': pagegenerators.parameterHelp
+docuReplacements = {  # pylint: disable=invalid-name
+    "&params;": pagegenerators.parameterHelp
 }
-HTML_COMMENT = re.compile(r'<!--.*?-->', flags=re.S)
+HTML_COMMENT = re.compile(r"<!--.*?-->", flags=re.S)
 ROUTEMAP_BSICON = re.compile(
-    r'(?=((?:\n|! !|!~|\\)[ \t]*)((?:[^\\~\n]|~(?!~))+?)([ \t]*'
-    r'(?:\n|!~|~~|!@|__|!_|\\)))'
+    r"(?=((?:\n|! !|!~|\\)[ \t]*)((?:[^\\~\n]|~(?!~))+?)([ \t]*"
+    r"(?:\n|!~|~~|!@|__|!_|\\)))"
 )
 
 
@@ -63,18 +67,18 @@ def process_options(options, site):
     """
     bsicons_map = dict()
     gen = chain()
-    for page in options['config'].pop('redirects'):
+    for page in options["config"].pop("redirects"):
         # Must be a redirect, and both must be BSicons.
         try:
             page = bsiconsbot.page.BSiconPage(page)
             bsicons_map[page] = bsiconsbot.page.BSiconPage(
-                page.getRedirectTarget())
+                page.getRedirectTarget()
+            )
         except (pywikibot.IsNotRedirectPage, ValueError) as e:
             pywikibot.warning(e)
             continue
-        gen = chain(gen, page.globalusage(), page.usingPages()) # T199398
-    for key, value in options['config'].pop('replacement_map',
-                                            dict()).items():
+        gen = chain(gen, page.globalusage(), page.usingPages())  # T199398
+    for key, value in options["config"].pop("replacement_map", dict()).items():
         # Both must be BSicons.
         try:
             page = bsiconsbot.page.BSiconPage(site, key)
@@ -82,8 +86,8 @@ def process_options(options, site):
         except ValueError as e:
             pywikibot.warning(e)
             continue
-        gen = chain(gen, page.globalusage(), page.usingPages()) # T199398
-    options['bsicons_map'] = bsicons_map
+        gen = chain(gen, page.globalusage(), page.usingPages())  # T199398
+    options["bsicons_map"] = bsicons_map
     return gen
 
 
@@ -116,39 +120,39 @@ def validate_config(config, site):
 
     @rtype: bool
     """
-    pywikibot.log('Config:')
-    required_keys = ['redirects']
+    pywikibot.log("Config:")
+    required_keys = ["redirects"]
     has_keys = list()
     for key, value in config.items():
-        pywikibot.log('-{} = {}'.format(key, value))
+        pywikibot.log("-{} = {}".format(key, value))
         if key in required_keys:
             has_keys.append(key)
-        if key in ('blacklist', 'redirects', 'whitelist'):
+        if key in ("blacklist", "redirects", "whitelist"):
             if isinstance(value, str):
                 config[key] = [value]
             elif not isinstance(value, list):
-                pywikibot.log('Invalid type.')
+                pywikibot.log("Invalid type.")
                 return False
-        pywikibot.log('\u2192{} = {}'.format(key, config[key]))
+        pywikibot.log("\u2192{} = {}".format(key, config[key]))
     if sorted(has_keys) != sorted(required_keys):
-        pywikibot.log('Missing one more required keys.')
+        pywikibot.log("Missing one more required keys.")
         return False
-    for key in ('blacklist', 'redirects', 'whitelist'):
+    for key in ("blacklist", "redirects", "whitelist"):
         if key in config:
             generator_factory = pagegenerators.GeneratorFactory(site)
             for item in config[key]:
                 if not generator_factory.handleArg(item):
-                    pywikibot.log('Invalid generator.')
+                    pywikibot.log("Invalid generator.")
                     return False
             gen = generator_factory.getCombinedGenerator()
             config[key] = set(gen)
         else:
             config[key] = set()
-    config['redirects'] = frozenset(
-        config.pop('redirects') - (config.pop('blacklist')
-                                   - config.pop('whitelist'))
+    config["redirects"] = frozenset(
+        config.pop("redirects")
+        - (config.pop("blacklist") - config.pop("whitelist"))
     )
-    replacement_map = config.pop('replacement_map', dict())
+    replacement_map = config.pop("replacement_map", dict())
     if isinstance(replacement_map, str):
         page = bsiconsbot.page.Page(site, replacement_map)
         replacement_map = page.get_json()
@@ -156,9 +160,9 @@ def validate_config(config, site):
         replacement_map = dict()
     for value in replacement_map.values():
         if not isinstance(value, str):
-            pywikibot.log('Invalid type.')
+            pywikibot.log("Invalid type.")
             return False
-    config['replacement_map'] = replacement_map
+    config["replacement_map"] = replacement_map
     return True
 
 
@@ -174,57 +178,67 @@ def validate_local_config(config, site):
     @rtype: bool
     """
     result = True
-    pywikibot.log('Config for {}:'.format(site))
-    required_keys = ['summary_prefix']
+    pywikibot.log("Config for {}:".format(site))
+    required_keys = ["summary_prefix"]
     has_keys = list()
     for key, value in config.items():
-        pywikibot.log('-{} = {}'.format(key, value))
+        pywikibot.log("-{} = {}".format(key, value))
         if key in required_keys:
             has_keys.append(key)
-        if key == 'BS_templates':
+        if key == "BS_templates":
             if isinstance(value, str):
-                config[key] = {'': [value]}
+                config[key] = {"": [value]}
             elif isinstance(value, list):
-                config[key] = {'': value}
+                config[key] = {"": value}
             elif not isinstance(value, dict):
-                pywikibot.log('Invalid type.')
+                pywikibot.log("Invalid type.")
                 result = False
             tpl_map = dict()
             for prefix, templates in config[key].items():
                 if isinstance(templates, str):
                     templates = [templates]
                 elif not isinstance(templates, list):
-                    pywikibot.log('Invalid type.')
+                    pywikibot.log("Invalid type.")
                     result = False
-                tpl_map[prefix] = bsiconsbot.page.get_template_pages([
-                    pywikibot.Page(site, tpl, site.namespaces.TEMPLATE)
-                    for tpl in templates])
+                tpl_map[prefix] = bsiconsbot.page.get_template_pages(
+                    [
+                        pywikibot.Page(site, tpl, site.namespaces.TEMPLATE)
+                        for tpl in templates
+                    ]
+                )
             config[key] = tpl_map
-        elif key in ('railway_track_templates', 'routemap_templates'):
+        elif key in ("railway_track_templates", "routemap_templates"):
             if isinstance(value, str):
                 config[key] = [value]
             elif not isinstance(value, list):
-                pywikibot.log('Invalid type.')
+                pywikibot.log("Invalid type.")
                 result = False
-            config[key] = bsiconsbot.page.get_template_pages([pywikibot.Page(
-                site, tpl, site.namespaces.TEMPLATE) for tpl in config[key]])
-        elif key == 'summary_prefix':
+            config[key] = bsiconsbot.page.get_template_pages(
+                [
+                    pywikibot.Page(site, tpl, site.namespaces.TEMPLATE)
+                    for tpl in config[key]
+                ]
+            )
+        elif key == "summary_prefix":
             if not isinstance(value, str):
-                pywikibot.log('Invalid type.')
+                pywikibot.log("Invalid type.")
                 result = False
-        pywikibot.log('\u2192{} = {}'.format(key, config[key]))
+        pywikibot.log("\u2192{} = {}".format(key, config[key]))
     if sorted(has_keys) != sorted(required_keys):
-        pywikibot.log('Missing one more required keys.')
+        pywikibot.log("Missing one more required keys.")
         result = False
-    if 'BS_templates' not in config:
-        config['BS_templates'] = dict()
-    if 'railway_track_templates' not in config:
-        config['railway_track_templates'] = set()
-    if 'routemap_templates' not in config:
-        config['routemap_templates'] = set()
-    if not (config['BS_templates'] or config['railway_track_templates']
-            or config['routemap_templates']):
-        pywikibot.log('Missing templates.')
+    if "BS_templates" not in config:
+        config["BS_templates"] = dict()
+    if "railway_track_templates" not in config:
+        config["railway_track_templates"] = set()
+    if "routemap_templates" not in config:
+        config["routemap_templates"] = set()
+    if not (
+        config["BS_templates"]
+        or config["railway_track_templates"]
+        or config["routemap_templates"]
+    ):
+        pywikibot.log("Missing templates.")
         result = False
     return result
 
@@ -236,18 +250,19 @@ class Replacement:
         """Initializer."""
         for item in (old, new):
             if not isinstance(item, bsiconsbot.page.BSiconPage):
-                raise ValueError('{} is not a BSicon.'.format(item))
+                raise ValueError("{} is not a BSicon.".format(item))
         self._old = old
         self._new = new
 
     def __str__(self):
         """String representation."""
-        return '\u2192'.join([self.old.name, self.new.name])
+        return "\u2192".join([self.old.name, self.new.name])
 
     def __repr__(self):
         """Complete string representation."""
-        return '{}({} with {})'.format(self.__class__.__name__,
-                                       repr(self.old), repr(self.new))
+        return "{}({} with {})".format(
+            self.__class__.__name__, repr(self.old), repr(self.new)
+        )
 
     def __eq__(self, other):
         """Test if two replacements are equal."""
@@ -268,8 +283,9 @@ class Replacement:
         return self._new
 
 
-class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
-                      ExistingPageBot):
+class BSiconsReplacer(
+    MultipleSitesBot, FollowRedirectPageBot, ExistingPageBot
+):
     """Bot to replace BSicons."""
 
     def __init__(self, generator, **kwargs):
@@ -280,11 +296,9 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
             pages to work
         @type generator: generator
         """
-        self.availableOptions.update({
-            'bsicons_map': dict(),
-            'config': dict(),
-            'local_config': None
-        })
+        self.available_options.update(
+            {"bsicons_map": dict(), "config": dict(), "local_config": None}
+        )
         self.generator = generator
         super().__init__(**kwargs)
         self._config = dict()
@@ -300,16 +314,18 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
             site.login()
         page = pywikibot.Page(
             site,
-            'User:{username}/shutoff/{class_name}.json'.format(
-                username=site.user(),
-                class_name=self.__class__.__name__
-            )
+            "User:{username}/shutoff/{class_name}.json".format(
+                username=site.user(), class_name=self.__class__.__name__
+            ),
         )
         if page.exists():
             content = page.get(force=True).strip()
             if content:
-                pywikibot.warning('{} disabled on {}:\n{}'.format(
-                    self.__class__.__name__, site, content))
+                pywikibot.warning(
+                    "{} disabled on {}:\n{}".format(
+                        self.__class__.__name__, site, content
+                    )
+                )
                 self._disabled.add(site)
                 return True
         return False
@@ -319,25 +335,29 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
         """Return the site configuration."""
         site = self.current_page.site
         if site not in self._config:
-            self._config[site] = copy.deepcopy(self.getOption('config'))
-            self._config[site].update(bsiconsbot.page.Page(
-                site, self.getOption('local_config')).get_json())
-            file_namespaces = ''.join(
-                ['[' + c + c.swapcase() + ']' if c.isalpha() else c for c in
-                 '|'.join(site.namespaces.FILE)])
-            self._config[site]['file_regex'] = re.compile(
+            self._config[site] = copy.deepcopy(self.opt.config)
+            self._config[site].update(
+                bsiconsbot.page.Page(site, self.opt.local_config).get_json()
+            )
+            file_namespaces = "".join(
+                [
+                    "[" + c + c.swapcase() + "]" if c.isalpha() else c
+                    for c in "|".join(site.namespaces.FILE)
+                ]
+            )
+            self._config[site]["file_regex"] = re.compile(
                 bsiconsbot.textlib.FILE_LINK_REGEX.format(file_namespaces),
-                flags=re.X
+                flags=re.X,
             )
             if not validate_local_config(self._config[site], site):
-                pywikibot.error('Invalid config for {}.'.format(site))
+                pywikibot.error("Invalid config for {}.".format(site))
                 self._config[site] = None
         return self._config[site]
 
     def skip_page(self, page):
         """Sikp the page if it is in userspace."""
         if page.namespace().id in {2, 3}:
-            pywikibot.warning('{} is in userspace.'.format(page))
+            pywikibot.warning("{} is in userspace.".format(page))
             return True
         return super().skip_page(page)
 
@@ -353,10 +373,10 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
         self.replace_template_files(wikicode)
         self.put_current(
             bsiconsbot.textlib.unmask_text(str(wikicode), mask),
-            summary='{}: {}'.format(
-                self.site_config['summary_prefix'],
-                ', '.join(map(str, self.current_page.replacements))
-            )
+            summary="{}: {}".format(
+                self.site_config["summary_prefix"],
+                ", ".join(map(str, self.current_page.replacements)),
+            ),
         )
 
     def replace_file_links(self, text):
@@ -368,24 +388,26 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
 
         @rtype: str
         """
-        if not hasattr(self.current_page, 'replacements'):
+        if not hasattr(self.current_page, "replacements"):
             self.current_page.replacements = set()
-        for match in self.site_config['file_regex'].finditer(
-                removeDisabledParts(text)):
+        for match in self.site_config["file_regex"].finditer(
+            removeDisabledParts(text)
+        ):
             try:
                 current_icon = bsiconsbot.page.BSiconPage(
-                    self.current_page.site, match.group('filename'))
+                    self.current_page.site, match.group("filename")
+                )
                 current_icon.title()
             except (pywikibot.Error, ValueError):
                 continue
-            new_icon = self.getOption('bsicons_map').get(current_icon, None)
+            new_icon = self.opt.bsicons_map.get(current_icon, None)
             if new_icon:
                 text = text.replace(
-                    match.group('filename'),
-                    new_icon.title(with_ns=False)
+                    match.group("filename"), new_icon.title(with_ns=False)
                 )
-                self.current_page.replacements.add(Replacement(current_icon,
-                                                               new_icon))
+                self.current_page.replacements.add(
+                    Replacement(current_icon, new_icon)
+                )
         return text
 
     def replace_gallery_files(self, wikicode):
@@ -395,30 +417,31 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
         @param wikicode: Parsed wikitext
         @type wikicode: L{mwparserfromhell.wikicode.Wikicode}
         """
-        if not hasattr(self.current_page, 'replacements'):
+        if not hasattr(self.current_page, "replacements"):
             self.current_page.replacements = set()
         for tag in wikicode.ifilter_tags():
-            if tag.tag.lower() != 'gallery':
+            if tag.tag.lower() != "gallery":
                 continue
             lines = str(tag.contents).splitlines()
             for i, line in enumerate(lines):
-                title, sep, caption = removeDisabledParts(line).partition('|')
+                title, sep, caption = removeDisabledParts(line).partition("|")
                 if not title:
                     continue
                 try:
                     current_icon = bsiconsbot.page.BSiconPage(
-                        self.current_page.site, title)
+                        self.current_page.site, title
+                    )
                     current_icon.title()
                 except (pywikibot.Error, ValueError):
                     continue
-                new_icon = self.getOption('bsicons_map').get(current_icon,
-                                                             None)
+                new_icon = self.opt.bsicons_map.get(current_icon, None)
                 if new_icon:
                     lines[i] = new_icon.title() + sep + caption
-                    self.current_page.replacements.add(Replacement(
-                        current_icon, new_icon))
+                    self.current_page.replacements.add(
+                        Replacement(current_icon, new_icon)
+                    )
             if self.current_page.replacements:
-                tag.contents = '\n'.join(lines) + '\n'
+                tag.contents = "\n".join(lines) + "\n"
 
     def replace_template_files(self, wikicode):
         """
@@ -427,21 +450,21 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
         @param wikicode: Parsed wikitext
         @type wikicode: L{mwparserfromhell.wikicode.Wikicode}
         """
-        if not hasattr(self.current_page, 'replacements'):
+        if not hasattr(self.current_page, "replacements"):
             self.current_page.replacements = set()
         for tpl in wikicode.ifilter_templates():
             try:
                 template = pywikibot.Page(
                     self.current_page.site,
                     removeDisabledParts(str(tpl.name)),
-                    ns=self.current_page.site.namespaces.TEMPLATE
+                    ns=self.current_page.site.namespaces.TEMPLATE,
                 )
                 template.title()
             except (pywikibot.Error, ValueError):
                 continue
-            if template in self.site_config['routemap_templates']:
+            if template in self.site_config["routemap_templates"]:
                 self._replace_routemap_files(tpl)
-            elif template in self.site_config['railway_track_templates']:
+            elif template in self.site_config["railway_track_templates"]:
                 self._replace_rt_template_files(tpl)
             else:
                 self._replace_bs_template_files(tpl, template)
@@ -449,97 +472,100 @@ class BSiconsReplacer(MultipleSitesBot, FollowRedirectPageBot,
     def _replace_routemap_files(self, tpl):
         """Helper method for replace_template_files()."""
         for param in tpl.params:
-            if not re.search(r'^(?:map\d*|\d+)$',
-                             str(param.name).strip()):
+            if not re.search(r"^(?:map\d*|\d+)$", str(param.name).strip()):
                 continue
             param_value = str(param.value)
             for match in ROUTEMAP_BSICON.findall(param_value):
-                current_name = HTML_COMMENT.sub('', match[1]).strip()
+                current_name = HTML_COMMENT.sub("", match[1]).strip()
                 try:
                     current_icon = bsiconsbot.page.BSiconPage(
-                        self.current_page.site, name=current_name)
+                        self.current_page.site, name=current_name
+                    )
                     current_icon.title()
                 except (pywikibot.Error, ValueError):
                     continue
-                new_icon = self.getOption('bsicons_map').get(current_icon,
-                                                             None)
+                new_icon = self.opt.bsicons_map.get(current_icon, None)
                 if not new_icon:
                     continue
                 param_value = param_value.replace(
-                    ''.join(match),
-                    match[0] + match[1].replace(current_name, new_icon.name)
-                    + match[2]
+                    "".join(match),
+                    match[0]
+                    + match[1].replace(current_name, new_icon.name)
+                    + match[2],
                 )
-                self.current_page.replacements.add(Replacement(current_icon,
-                                                               new_icon))
+                self.current_page.replacements.add(
+                    Replacement(current_icon, new_icon)
+                )
             param.value = param_value
 
     def _replace_rt_template_files(self, tpl):
         """Helper method for replace_template_files()."""
         # Written for [[:cs:Template:Železniční trať]].
         for param in tpl.params:
-            param_value = HTML_COMMENT.sub('',
-                                           str(param.value)).strip()
-            if param.name.matches('typ'):
-                if param_value[:2] == 'ex':
-                    current_name = 'exl' + param_value[2:]
+            param_value = HTML_COMMENT.sub("", str(param.value)).strip()
+            if param.name.matches("typ"):
+                if param_value[:2] == "ex":
+                    current_name = "exl" + param_value[2:]
                 else:
-                    current_name = 'l' + param_value
+                    current_name = "l" + param_value
             else:
                 current_name = param_value
             try:
                 current_icon = bsiconsbot.page.BSiconPage(
-                    self.current_page.site, name=current_name)
+                    self.current_page.site, name=current_name
+                )
                 current_icon.title()
             except (pywikibot.Error, ValueError):
                 continue
-            new_icon = self.getOption('bsicons_map').get(current_icon, None)
+            new_icon = self.opt.bsicons_map.get(current_icon, None)
             if not new_icon:
                 continue
-            if param.name.matches('typ'):
-                if new_icon.name[:3] == 'exl':
-                    replacement = 'ex' + new_icon.name[3:]
-                elif new_icon.name[:1] == 'l':
+            if param.name.matches("typ"):
+                if new_icon.name[:3] == "exl":
+                    replacement = "ex" + new_icon.name[3:]
+                elif new_icon.name[:1] == "l":
                     replacement = new_icon.name[1:]
                 else:
-                    pywikibot.log('{} cannot be used in |typ=.'
-                                  .format(new_icon))
+                    pywikibot.log(
+                        "{} cannot be used in |typ=.".format(new_icon)
+                    )
                     continue
             else:
                 replacement = new_icon.name
-            param.value = str(param.value).replace(param_value,
-                                                   replacement)
-            self.current_page.replacements.add(Replacement(current_icon,
-                                                           new_icon))
+            param.value = str(param.value).replace(param_value, replacement)
+            self.current_page.replacements.add(
+                Replacement(current_icon, new_icon)
+            )
 
     def _replace_bs_template_files(self, tpl, template):
         """Helper method for replace_template_files()."""
-        for icon_prefix, templates in self.site_config[
-                'BS_templates'].items():
+        for icon_prefix, templates in self.site_config["BS_templates"].items():
             if template not in templates:
                 continue
             for param in tpl.params:
-                if param.name.matches('1'):
+                if param.name.matches("1"):
                     prefix = icon_prefix.strip()
                 else:
-                    prefix = ''
-                param_value = HTML_COMMENT.sub('', str(param.value)).strip()
+                    prefix = ""
+                param_value = HTML_COMMENT.sub("", str(param.value)).strip()
                 try:
                     current_icon = bsiconsbot.page.BSiconPage(
-                        self.current_page.site, name=prefix + param_value)
+                        self.current_page.site, name=prefix + param_value
+                    )
                     current_icon.title()
                 except (pywikibot.Error, ValueError):
                     continue
-                new_icon = self.getOption('bsicons_map').get(current_icon,
-                                                             None)
+                new_icon = self.opt.bsicons_map.get(current_icon, None)
                 if not new_icon:
                     continue
                 # The replacement must have the same prefix.
-                if new_icon.name[:len(prefix)] == prefix:
+                if new_icon.name[: len(prefix)] == prefix:
                     param.value = str(param.value).replace(
-                        param_value, new_icon.name[len(prefix):])
+                        param_value, new_icon.name[len(prefix) :]
+                    )
                     self.current_page.replacements.add(
-                        Replacement(current_icon, new_icon))
+                        Replacement(current_icon, new_icon)
+                    )
 
 
 def main(*args):
@@ -549,40 +575,36 @@ def main(*args):
     @param args: command line arguments
     @type args: list of unicode
     """
-    options = {
-        'transcluded': False
-    }
+    options = {"transcluded": False}
     local_args = pywikibot.handle_args(args)
     site = pywikibot.Site()
     site.login()
-    gen_factory = pagegenerators.GeneratorFactory()
-    for arg in local_args:
-        if gen_factory.handleArg(arg):
-            continue
-        arg, _, value = arg.partition(':')
+    gen_factory = pagegenerators.GeneratorFactory(site)
+    script_args = gen_factory.handle_args(local_args)
+    for arg in script_args:
+        arg, _, value = arg.partition(":")
         arg = arg[1:]
-        if arg in ('config', 'local_config'):
+        if arg in ("config", "local_config"):
             if not value:
                 value = pywikibot.input(
-                    'Please enter a value for {}'.format(arg),
-                    default=None
+                    "Please enter a value for {}".format(arg), default=None
                 )
             options[arg] = value
         else:
             options[arg] = True
-    if 'config' not in options:
-        pywikibot.bot.suggest_help(missing_parameters=['config'])
+    if "config" not in options:
+        pywikibot.bot.suggest_help(missing_parameters=["config"])
         return False
-    if 'local_config' not in options:
-        options['local_config'] = options['config']
-    config = bsiconsbot.page.Page(site, options.pop('config')).get_json()
+    if "local_config" not in options:
+        options["local_config"] = options["config"]
+    config = bsiconsbot.page.Page(site, options.pop("config")).get_json()
     if validate_config(config, site):
-        options['config'] = config
+        options["config"] = config
     else:
-        pywikibot.error('Invalid config.')
+        pywikibot.error("Invalid config.")
         return False
     gen = process_options(options, site)
-    if options.pop('transcluded'):
+    if options.pop("transcluded"):
         gen = transcluded_add_generator(gen)
     gen = gen_factory.getCombinedGenerator(gen=gen, preload=True)
     BSiconsReplacer(gen, **options).run()
