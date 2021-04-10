@@ -24,7 +24,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools wheel
         python setup.py install
-        pip install pylint
+        python -m pip install pylint
     - name: Lint with pylint
       run: |
-        pylint bsiconsbot scripts
+        pylint bsiconsbot bsiconsbotscripts
