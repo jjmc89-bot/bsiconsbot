@@ -1,188 +1,104 @@
-#!/usr/bin/env python3
 """
-This script generates BSicon reports.
+Generate BSicon reports.
 
     - Output changes to BSicons
     - List BSicon redirects
     - List large BSicons
-
-The following parameters are required:
-
--config           The page title that has the JSON config (object).
-                  Options set in the config override those provided when
-                  running this script.
-
-The following parameters are supported:
-
--changes_date     The table of changes is added for this date. The default
-                  is yesterday.
-
--changes_page_prefix Title prefix of the page to save the file changes
-
--redirects_page   Title of the page to save the redirects list
-
--list_summary     Edit summary to use when updating one the lists
-
--large_size       Files over this size will be included in the large files
-                  list
-
--large_page       Title of the page to save the large files list
 """
 # Author : JJMC89
 # License: MIT
-# pylint: disable=too-many-branches
+import argparse
 import datetime
-import sys
-from datetime import date, time, timedelta
+from typing import Any, Dict, List
 
 import pywikibot
-from pywikibot import pagegenerators
+import pywikibot.pagegenerators
+from jsoncfg.value_mappers import require_bool
 
-import bsiconsbot.page
+import bsiconsbot
+from bsiconsbot.options_classes import TitleToPage
+from bsiconsbot.page import BSiconPage, Page
 from bsiconsbot.textlib import get_headers
 
 
-def get_page_from_size(page, size=1e6):
+def get_page_from_size(page: pywikibot.Page) -> pywikibot.Page:
     """Return a page based on the current page size."""
     i = 1
     title = page.title()
     while True:
         if not page.exists():
             break
-        if len(page.text) < size:
+        if len(page.text) < 1e6:
             break
         i += 1
         page = pywikibot.Page(page.site, f"{title} ({i:02d})")
     return page
 
 
-def validate_options(options):
+def save_list(page_list: List[pywikibot.Page], page: Page) -> None:
     """
-    Validate the options and return bool.
+    Write the given page_list to the given page.
 
-    @param options: options to validate
-    @type options: dict
-
-    @rtype: bool
-    """
-    result = True
-    pywikibot.log("Options:")
-    required_keys = [
-        "changes_date",
-        "changes_page_prefix",
-        "enabled",
-        "list_summary",
-        "large_page",
-        "large_size",
-        "redirects_page",
-        "logs_page_prefix",
-    ]
-    has_keys = list()
-    if "changes_date" in options:
-        value = options["changes_date"]
-        if isinstance(value, datetime.date):
-            pass
-        elif isinstance(value, str):
-            try:
-                value = datetime.datetime.strptime(value, "%Y-%m-%d").date()
-            except ValueError:
-                pywikibot.error("Date format must be YYYY-MM-DD.")
-                return False
-        else:
-            return False
-        options["changes_date"] = value
-    else:
-        return False
-    for key, value in options.items():
-        pywikibot.log(f"-{key} = {value}")
-        if key in required_keys:
-            has_keys.append(key)
-        if key in ("changes_page_prefix", "list_summary", "logs_page_prefix"):
-            if not isinstance(value, str):
-                result = False
-        elif key == "enabled":
-            if not isinstance(value, bool):
-                result = False
-            elif value is not True:
-                sys.exit("Task disabled.")
-        elif key in ("large_page", "redirects_page"):
-            if isinstance(value, str):
-                options[key] = bsiconsbot.page.Page(options["site"], value)
-            else:
-                result = False
-        elif key == "large_size":
-            try:
-                options[key] = int(value)
-            except ValueError:
-                result = False
-    if sorted(has_keys) != sorted(required_keys):
-        result = False
-    return result
-
-
-def save_list(page_list, page, summary):
-    """
-    Writes the given page_list to the given page.
-
-    @param page_list: List of pages to output
-    @type page_list: list of L{pywikibot.Page}
-    @param page: Page to save to
-    @type page: L{bsiconsbot.page.Page}
-    @param summary: Edit summary
-    @type summary: str
+    :param page_list: List of pages to output
+    :param page: Page to save to
     """
     list_text = ""
     for item in sorted(page_list):
-        list_text += f"\n# {item.title(asLink=True, textlink=True)}"
+        list_text += f"\n# {item.title(as_link=True, textlink=True)}"
     try:
-        page.save_bot_start_end(list_text, summary=summary, force=True)
-    except Exception as e:  # pylint: disable=broad-except
-        pywikibot.exception(e, tb=True)
+        page.save_bot_start_end(list_text, summary="Updating list", force=True)
+    except pywikibot.exceptions.Error:
+        pywikibot.exception(tb=True)
 
 
-def output_log(logtype=None, options=None, bsicon_template_title="bsq2"):
-    """
-    Writes logevents to a page.
+def _handle_hidden(data: Dict[str, Any]) -> None:
+    """Fill in placeholders for hidden keys."""
+    for prop in ("comment", "user"):
+        if f"{prop}hidden" in data:
+            data[prop] = f"({prop} hidden)"
 
-    @param logtype: The logtype to output
-    @type logtype: str
-    @param options: Validated options
-    @type options: dict
-    @param bsicon_template_title: Title of BSicon template to use
-    @type bsicon_template_title: str
-    """
+
+def output_log(
+    *,
+    site: pywikibot.site.APISite,
+    logtype: str,
+    start: datetime.datetime,
+    end: datetime.datetime,
+    prefix: str,
+    bsicon_template_title: str = "bsq2",
+) -> None:
+    """Write logevents to a page."""
     log_page = pywikibot.Page(
-        options["site"],
+        site,
         "{prefix}/{type}/{subpage}".format(
-            prefix=options["logs_page_prefix"],
+            prefix=prefix,
             type=logtype,
-            subpage=options["changes_date"].strftime("%Y-%m"),
+            subpage=start.strftime("%Y-%m"),
         ),
     )
-    if options["changes_date"].isoformat() in get_headers(log_page.text):
+    if start.date().isoformat() in get_headers(log_page.text):
         return
     log_page = get_page_from_size(log_page)
-    if options["changes_date"].isoformat() in get_headers(log_page.text):
+    if start.date().isoformat() in get_headers(log_page.text):
         return
     if not log_page.exists():
         log_page.save(
-            text="{{{{nobots}}}}{{{{{prefix}}}}}".format(
-                prefix=options["logs_page_prefix"]
-            ),
+            text=f"{{{{nobots}}}}{{{{{prefix}}}}}",
             summary="Create log page",
         )
     log_text = ""
-    for logevent in options["site"].logevents(
+    for logevent in site.logevents(
         logtype=logtype,
-        namespace=options["site"].namespaces.FILE.id,
-        start=options["start"],
-        end=options["end"],
+        namespace=6,
+        start=start,
+        end=end,
         reverse=True,
     ):
         try:
-            bsicon = bsiconsbot.page.BSiconPage(logevent.page())
+            bsicon = BSiconPage(logevent.page())
         except ValueError:
             continue
+        _handle_hidden(logevent.data)
         log_text += (
             "\n|-\n| {{{{{tpl}|{name}}}}} || {r[logid]} || {r[timestamp]} "
             "|| {r[user]} || <nowiki>{r[comment]}</nowiki>".format(
@@ -191,9 +107,9 @@ def output_log(logtype=None, options=None, bsicon_template_title="bsq2"):
         )
     if log_text:
         log_text = (
-            '{{| class="wikitable sortable mw-collapsible mw-collapsed"'
-            "\n! BSicon !! logid !! Date/time !! User !! Summary"
-            "{body}\n|}}".format(body=log_text)
+            f'{{| class="wikitable sortable mw-collapsible mw-collapsed"'
+            f"\n! BSicon !! logid !! Date/time !! User !! Summary"
+            f"{log_text}\n|}}"
         )
     else:
         log_text = ": None"
@@ -201,85 +117,81 @@ def output_log(logtype=None, options=None, bsicon_template_title="bsq2"):
         log_page.save(
             text=log_text,
             section="new",
-            summary=options["changes_date"].isoformat(),
+            summary=start.date().isoformat(),
             minor=False,
             force=True,
         )
-    except Exception as e:  # pylint: disable=broad-except
-        pywikibot.exception(e, tb=True)
+    except pywikibot.exceptions.Error:
+        pywikibot.exception(tb=True)
 
 
-def output_move_log(options=None):
-    """
-    Writes move logevents to a page.
-
-    @param options: Validated options
-    @type options: dict
-    """
+def output_move_log(
+    *,
+    site: pywikibot.site.APISite,
+    start: datetime.datetime,
+    end: datetime.datetime,
+    prefix: str,
+) -> None:
+    """Write move logevents to a page."""
     logtype = "move"
     log_page = pywikibot.Page(
-        options["site"],
+        site,
         "{prefix}/{type}/{subpage}".format(
-            prefix=options["logs_page_prefix"],
+            prefix=prefix,
             type=logtype,
-            subpage=options["changes_date"].strftime("%Y-%m"),
+            subpage=start.strftime("%Y-%m"),
         ),
     )
-    if options["changes_date"].isoformat() in get_headers(log_page.text):
+    if start.date().isoformat() in get_headers(log_page.text):
         return
     log_page = get_page_from_size(log_page)
-    if options["changes_date"].isoformat() in get_headers(log_page.text):
+    if start.date().isoformat() in get_headers(log_page.text):
         return
     if not log_page.exists():
         log_page.save(
-            text="{{{{nobots}}}}{{{{{prefix}}}}}".format(
-                prefix=options["logs_page_prefix"]
-            ),
+            text=f"{{{{nobots}}}}{{{{{prefix}}}}}",
             summary="Create log page",
         )
     log_text = ""
-    for logevent in options["site"].logevents(
+    for logevent in site.logevents(
         logtype=logtype,
-        namespace=options["site"].namespaces.FILE.id,
-        start=options["start"],
-        end=options["end"],
+        namespace=6,
+        start=start,
+        end=end,
         reverse=True,
     ):
         page = logevent.page()
+        row_text = "\n|-\n| "
         try:
-            page = bsiconsbot.page.BSiconPage(page)
+            page = BSiconPage(page)
         except ValueError:
-            is_bsicon = False
+            row_text += page.title(as_link=True, textlink=True)
         else:
-            is_bsicon = True
+            row_text += f"{{{{bsn|{page.name}}}}}"
+        row_text += " || "
         target = logevent.target_page
         try:
-            target = bsiconsbot.page.BSiconPage(target)
+            target = BSiconPage(target)
         except ValueError:
-            target_is_bsicon = False
+            row_text += target.title(as_link=True, textlink=True)
         else:
-            target_is_bsicon = True
-        if not (is_bsicon or target_is_bsicon):
+            row_text += f"{{{{bsq2|{target.name}}}}}"
+        if not (
+            isinstance(page, BSiconPage) or isinstance(target, BSiconPage)
+        ):
             continue
-        log_text += "\n|-\n| "
-        if is_bsicon:
-            log_text += f"{{{{bsn|{page.name}}}}}"
-        else:
-            log_text += page.title(asLink=True, textlink=True)
-        log_text += " || "
-        if target_is_bsicon:
-            log_text += f"{{{{bsq2|{target.name}}}}}"
-        else:
-            log_text += target.title(asLink=True, textlink=True)
+        log_text += row_text
+        _handle_hidden(logevent.data)
         log_text += (
             " || {r[logid]} || {r[timestamp]} || {r[user]} || "
             "<nowiki>{r[comment]}</nowiki>".format(r=logevent.data)
         )
+        log_text += row_text
     if log_text:
         log_text = (
-            '{{| class="wikitable sortable mw-collapsible mw-collapsed"'
-            "\n! Page !! Target !! logid !! Date/time !! User !! Summary"
-            "{body}\n|}}".format(body=log_text)
+            f'{{| class="wikitable sortable mw-collapsible mw-collapsed"'
+            f"\n! Page !! Target !! logid !! Date/time !! User !! Summary"
+            f"{log_text}\n|}}"
         )
     else:
         log_text = ": None"
@@ -287,60 +199,54 @@ def output_move_log(options=None):
         log_page.save(
             text=log_text,
             section="new",
-            summary=options["changes_date"].isoformat(),
+            summary=start.date().isoformat(),
             minor=False,
             force=True,
         )
-    except Exception as e:  # pylint: disable=broad-except
-        pywikibot.exception(e, tb=True)
+    except pywikibot.exceptions.Error:
+        pywikibot.exception(tb=True)
 
 
-def output_edits(options=None):
-    """
-    Writes edits to a page.
-
-    @param options: Validated options
-    @type options: dict
-    """
+def output_edits(
+    *,
+    site: pywikibot.site.APISite,
+    start: datetime.datetime,
+    end: datetime.datetime,
+    prefix: str,
+) -> None:
+    """Write edits to a page."""
     changes_page = pywikibot.Page(
-        options["site"],
+        site,
         "{prefix}/{subpage}".format(
-            prefix=options["changes_page_prefix"],
-            subpage=options["changes_date"].strftime("%Y-%m"),
+            prefix=prefix,
+            subpage=start.strftime("%Y-%m"),
         ),
     )
-    if options["changes_date"].isoformat() in get_headers(changes_page.text):
+    if start.date().isoformat() in get_headers(changes_page.text):
         return
     changes_page = get_page_from_size(changes_page)
-    if options["changes_date"].isoformat() in get_headers(changes_page.text):
+    if start.date().isoformat() in get_headers(changes_page.text):
         return
     if not changes_page.exists():
         changes_page.save(
-            text="{{{{nobots}}}}{{{{{prefix}}}}}".format(
-                prefix=options["changes_page_prefix"]
-            ),
+            text=f"{{{{nobots}}}}{{{{{prefix}}}}}",
             summary="Create changes page",
         )
     file_changes = ""
-    for recent_change in options["site"].recentchanges(
-        start=options["start"],
-        end=options["end"],
+    for recent_change in site.recentchanges(
+        start=start,
+        end=end,
         reverse=True,
-        namespaces=options["site"].namespaces.FILE,
+        namespaces=6,
         changetype="edit|new",
     ):
         try:
-            file = bsiconsbot.page.BSiconPage(
-                options["site"], recent_change["title"]
-            )
+            file = BSiconPage(site, recent_change["title"])
         except (KeyError, ValueError):
             continue
         if not file.exists():
             continue
-        # Fill in placeholders for hidden keys.
-        for prop in ("comment", "user"):
-            if prop + "hidden" in recent_change:
-                recent_change[prop] = f"({prop} hidden)"
+        _handle_hidden(recent_change)
         file_changes += (
             "\n|-\n| {{{{bsq2|{name}}}}} || {rc[revid]} || {rc[timestamp]} || "
             "{rc[user]} || <nowiki>{rc[comment]}</nowiki>".format(
@@ -349,9 +255,9 @@ def output_edits(options=None):
         )
     if file_changes:
         file_changes = (
-            '{{| class="wikitable sortable mw-collapsible mw-collapsed"'
-            "\n! BSicon !! revid !! Date/time !! User !! Summary"
-            "{body}\n|}}".format(body=file_changes)
+            f'{{| class="wikitable sortable mw-collapsible mw-collapsed"'
+            f"\n! BSicon !! revid !! Date/time !! User !! Summary"
+            f"{file_changes}\n|}}"
         )
     else:
         file_changes = ": No changes"
@@ -359,108 +265,121 @@ def output_edits(options=None):
         changes_page.save(
             text=file_changes,
             section="new",
-            summary=options["changes_date"].isoformat(),
+            summary=start.date().isoformat(),
             minor=False,
             force=True,
         )
-    except Exception as e:  # pylint: disable=broad-except
-        pywikibot.exception(e, tb=True)
+    except pywikibot.exceptions.Error:
+        pywikibot.exception(tb=True)
 
 
-def main(*args):
+def main(*args: str) -> int:
     """
     Process command line arguments and invoke bot.
 
-    @param args: command line arguments
-    @type args: list of unicode
+    :param args: command line arguments
     """
-    options = {
-        "enabled": False,
-        "changes_date": date.today() - timedelta(days=1),
-        "large_size": 1000,
-        "list_summary": "Updating list",
-    }
-    local_args = pywikibot.handle_args(args)
-    options["site"] = pywikibot.Site()
-    options["site"].login()
-    gen_factory = pagegenerators.GeneratorFactory()
-    script_args = gen_factory.handle_args(local_args)
-    for arg in script_args:
-        arg, _, value = arg.partition(":")
-        arg = arg[1:]
-        if arg in (
-            "config",
-            "changes_date",
-            "changes _page_prefix",
-            "redirects_page",
-            "large_size",
-            "large_page",
-            "list_summary",
-            "logs_page_prefix",
-        ):
-            if not value:
-                value = pywikibot.input(
-                    f"Please enter a value for {arg}", default=None
-                )
-            options[arg] = value
-        else:
-            options[arg] = True
-    if "config" in options:
-        options.update(
-            bsiconsbot.page.Page(
-                options["site"], options.pop("config")
-            ).get_json()
-        )
-    else:
-        pywikibot.bot.suggest_help(missing_parameters=["config"])
-        return False
-    if not validate_options(options):
-        pywikibot.error("Invalid options.")
-        return False
-    file_redirects = pagegenerators.MySQLPageGenerator(
+    local_args = pywikibot.handle_args(args, do_help=False)
+    site = pywikibot.Site()
+    title_to_page = TitleToPage(site)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog=bsiconsbot.PYWIKIBOT_GLOBAL_HELP,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        allow_abbrev=False,
+    )
+    parser.add_argument(
+        "config",
+        type=title_to_page,
+        help="page title that has the JSON config (object)",
+    )
+    parser.add_argument(
+        "changes_page_prefix",
+        help="prefix of the page title to output the changes",
+        metavar="changes-page-prefix",
+    )
+    parser.add_argument(
+        "large_page",
+        type=title_to_page,
+        help="page title to output the list of large files",
+        metavar="large-page",
+    )
+    parser.add_argument(
+        "logs_page_prefix",
+        help="prefix of the page title to output logs",
+        metavar="logs-page-prefix",
+    )
+    parser.add_argument(
+        "redirects_page",
+        type=title_to_page,
+        help="page title to output the list of redirects",
+        metavar="redirects-page",
+    )
+    parser.add_argument(
+        "--large-size",
+        default=1000,
+        type=int,
+        help="maximum size for non-large files (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--date",
+        default=site.server_time().date() - datetime.timedelta(days=1),
+        type=datetime.date.fromisoformat,
+        help="list changes/logs on this date (default: %(default)s)",
+        metavar="YYYY-MM-DD",
+    )
+    parser.add_argument(
+        "--enable",
+        action="store_true",
+        help="force enable",
+        dest="enabled",
+    )
+    parsed_args = parser.parse_args(args=local_args)
+    site.login()
+    config_json = parsed_args.config.get_json()
+    if not (parsed_args.enabled or config_json.enabled(False, require_bool)):
+        pywikibot.error("Task disabled.")
+        return 1
+    file_redirects = pywikibot.pagegenerators.MySQLPageGenerator(  # nosec
         "select page_namespace, page_title "
         "from page "
         "where page_namespace = 6 "
-        'and page_title like "{prefix}%{suffix}" '
+        f"and page_title like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "
         "and page_is_redirect = 1 "
-        "order by page_title".format(
-            prefix=bsiconsbot.page.BSiconPage.PREFIX,
-            suffix=bsiconsbot.page.BSiconPage.SUFFIX,
-        ),
-        site=options["site"],
+        "order by page_title",
+        site=site,
     )
-    save_list(
-        file_redirects,
-        options["redirects_page"],
-        summary=options["list_summary"],
+    save_list(file_redirects, parsed_args.redirects_page)
+    start = datetime.datetime.combine(parsed_args.date, datetime.time.min)
+    end = datetime.datetime.combine(parsed_args.date, datetime.time.max)
+    output_log(
+        site=site,
+        logtype="upload",
+        start=start,
+        end=end,
+        prefix=parsed_args.logs_page_prefix,
     )
-    options["start"] = datetime.datetime.combine(
-        options["changes_date"], time.min
+    output_log(
+        site=site,
+        logtype="delete",
+        start=start,
+        end=end,
+        prefix=parsed_args.logs_page_prefix,
+        bsicon_template_title="bsn",
     )
-    options["end"] = datetime.datetime.combine(
-        options["changes_date"], time.max
+    output_move_log(
+        site=site, start=start, end=end, prefix=parsed_args.logs_page_prefix
     )
-    output_log(logtype="upload", options=options)
-    output_log(logtype="delete", options=options, bsicon_template_title="bsn")
-    output_move_log(options=options)
-    output_edits(options=options)
-    large_files = pagegenerators.MySQLPageGenerator(
+    output_edits(
+        site=site, start=start, end=end, prefix=parsed_args.changes_page_prefix
+    )
+    large_files = pywikibot.pagegenerators.MySQLPageGenerator(  # nosec
         "select 6, img_name "
         "from image "
-        'where img_name like "{prefix}%{suffix}" '
-        "and img_size > {large_size} "
-        "order by img_name".format(
-            prefix=bsiconsbot.page.BSiconPage.PREFIX,
-            suffix=bsiconsbot.page.BSiconPage.SUFFIX,
-            large_size=options["large_size"],
-        ),
-        site=options["site"],
+        f"where img_name like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "
+        f"and img_size > {parsed_args.large_size} "
+        "order by img_name",
+        site=site,
     )
-    save_list(
-        large_files, options["large_page"], summary=options["list_summary"]
-    )
-    return True
-
-
-if __name__ == "__main__":
-    main()
+    save_list(large_files, parsed_args.large_page)
+    return 0
