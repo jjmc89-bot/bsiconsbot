@@ -1,5 +1,10 @@
 """Functions for manipulating wiki-text."""
 import re
+from typing import Dict, List, Optional, Pattern, Tuple
+
+
+MaskType = Dict[int, str]
+
 
 # from pywikibot.textlib
 FILE_LINK_REGEX = r"""
@@ -30,25 +35,27 @@ FILE_LINK_REGEX = r"""
 """
 
 
-def get_headers(text):
+def get_headers(text: str) -> List[str]:
     """
     Return a list of section headers.
 
-    @param text: Text to parse
-    @type text: str
-
-    @rtype: list
+    :param text: Text to parse
     """
     return re.findall(r"^=+ *(.+?) *=+ *$", text, flags=re.M)
 
 
-def mask_text(text, regex, mask=None):
+def mask_text(
+    text: str, regex: Pattern[str], mask: Optional[MaskType] = None
+) -> Tuple[str, MaskType]:
     """
     Mask text using a regex.
 
-    @rtype: str, dict
+    :param text: Text to mask
+    :param regex: Compiled regex
+    :param mask: Mask store
+    :return: Masked text and mask store
     """
-    mask = mask or dict()
+    mask = mask or {}
     try:
         key = max(mask.keys()) + 1
     except ValueError:
@@ -65,8 +72,16 @@ def mask_text(text, regex, mask=None):
     return text, mask
 
 
-def mask_html_tags(text, mask=None):
-    """Mask HTML tags."""
+def mask_html_tags(
+    text: str, mask: Optional[MaskType] = None
+) -> Tuple[str, MaskType]:
+    """
+    Mask HTML tags.
+
+    :param text: Text to mask
+    :param mask: Mask store
+    :return: Masked text and mask store
+    """
     tags_regex = re.compile(
         r"""(<\/?\w+(?:\s+\w+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|"""
         r"""[^>\s]+))?)*\s*\/?>)""",
@@ -75,13 +90,24 @@ def mask_html_tags(text, mask=None):
     return mask_text(text, tags_regex, mask)
 
 
-def mask_pipe_mw(text):
-    """Mask the pipe magic word ({{!}})."""
+def mask_pipe_mw(text: str) -> str:
+    """
+    Mask the pipe magic word ({{!}}).
+
+    :param text: Text to mask
+    :return: Masked text
+    """
     return text.replace("{{!}}", "|***bot***=***param***|")
 
 
-def unmask_text(text, mask):
-    """Unmask text."""
+def unmask_text(text: str, mask: MaskType) -> str:
+    """
+    Unmask text.
+
+    :param text: Text to unmask
+    :param mask: Mask store
+    :return: unasked text
+    """
     text = text.replace("|***bot***=***param***|", "{{!}}")
     while text.find("***bot***masked***") > -1:
         for key, value in mask.items():
