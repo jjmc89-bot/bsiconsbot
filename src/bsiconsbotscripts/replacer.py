@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 This script replaces BSicons.
 
@@ -124,7 +123,7 @@ def validate_config(config, site):
     required_keys = ["redirects"]
     has_keys = list()
     for key, value in config.items():
-        pywikibot.log("-{} = {}".format(key, value))
+        pywikibot.log(f"-{key} = {value}")
         if key in required_keys:
             has_keys.append(key)
         if key in ("blacklist", "redirects", "whitelist"):
@@ -133,7 +132,7 @@ def validate_config(config, site):
             elif not isinstance(value, list):
                 pywikibot.log("Invalid type.")
                 return False
-        pywikibot.log("\u2192{} = {}".format(key, config[key]))
+        pywikibot.log(f"\u2192{key} = {config[key]}")
     if sorted(has_keys) != sorted(required_keys):
         pywikibot.log("Missing one more required keys.")
         return False
@@ -178,11 +177,11 @@ def validate_local_config(config, site):
     @rtype: bool
     """
     result = True
-    pywikibot.log("Config for {}:".format(site))
+    pywikibot.log(f"Config for {site}:")
     required_keys = ["summary_prefix"]
     has_keys = list()
     for key, value in config.items():
-        pywikibot.log("-{} = {}".format(key, value))
+        pywikibot.log(f"-{key} = {value}")
         if key in required_keys:
             has_keys.append(key)
         if key == "BS_templates":
@@ -223,7 +222,7 @@ def validate_local_config(config, site):
             if not isinstance(value, str):
                 pywikibot.log("Invalid type.")
                 result = False
-        pywikibot.log("\u2192{} = {}".format(key, config[key]))
+        pywikibot.log(f"\u2192{key} = {config[key]}")
     if sorted(has_keys) != sorted(required_keys):
         pywikibot.log("Missing one more required keys.")
         result = False
@@ -250,7 +249,7 @@ class Replacement:
         """Initializer."""
         for item in (old, new):
             if not isinstance(item, bsiconsbot.page.BSiconPage):
-                raise ValueError("{} is not a BSicon.".format(item))
+                raise ValueError(f"{item} is not a BSicon.")
         self._old = old
         self._new = new
 
@@ -350,14 +349,14 @@ class BSiconsReplacer(
                 flags=re.X,
             )
             if not validate_local_config(self._config[site], site):
-                pywikibot.error("Invalid config for {}.".format(site))
+                pywikibot.error(f"Invalid config for {site}.")
                 self._config[site] = None
         return self._config[site]
 
     def skip_page(self, page):
         """Sikp the page if it is in userspace."""
         if page.namespace().id in {2, 3}:
-            pywikibot.warning("{} is in userspace.".format(page))
+            pywikibot.warning(f"{page} is in userspace.")
             return True
         return super().skip_page(page)
 
@@ -527,7 +526,7 @@ class BSiconsReplacer(
                     replacement = new_icon.name[1:]
                 else:
                     pywikibot.log(
-                        "{} cannot be used in |typ=.".format(new_icon)
+                        f"{new_icon} cannot be used in |typ=."
                     )
                     continue
             else:
@@ -587,7 +586,7 @@ def main(*args):
         if arg in ("config", "local_config"):
             if not value:
                 value = pywikibot.input(
-                    "Please enter a value for {}".format(arg), default=None
+                    f"Please enter a value for {arg}", default=None
                 )
             options[arg] = value
         else:
