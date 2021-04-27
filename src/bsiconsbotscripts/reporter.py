@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 This script generates BSicon reports.
 
@@ -53,7 +52,7 @@ def get_page_from_size(page, size=1e6):
         if len(page.text) < size:
             break
         i += 1
-        page = pywikibot.Page(page.site, "{} ({:02d})".format(title, i))
+        page = pywikibot.Page(page.site, f"{title} ({i:02d})")
     return page
 
 
@@ -95,7 +94,7 @@ def validate_options(options):
     else:
         return False
     for key, value in options.items():
-        pywikibot.log("-{} = {}".format(key, value))
+        pywikibot.log(f"-{key} = {value}")
         if key in required_keys:
             has_keys.append(key)
         if key in ("changes_page_prefix", "list_summary", "logs_page_prefix"):
@@ -134,7 +133,7 @@ def save_list(page_list, page, summary):
     """
     list_text = ""
     for item in sorted(page_list):
-        list_text += "\n# {}".format(item.title(asLink=True, textlink=True))
+        list_text += f"\n# {item.title(asLink=True, textlink=True)}"
     try:
         page.save_bot_start_end(list_text, summary=summary, force=True)
     except Exception as e:  # pylint: disable=broad-except
@@ -264,12 +263,12 @@ def output_move_log(options=None):
             continue
         log_text += "\n|-\n| "
         if is_bsicon:
-            log_text += "{{{{bsn|{name}}}}}".format(name=page.name)
+            log_text += f"{{{{bsn|{page.name}}}}}"
         else:
             log_text += page.title(asLink=True, textlink=True)
         log_text += " || "
         if target_is_bsicon:
-            log_text += "{{{{bsq2|{name}}}}}".format(name=target.name)
+            log_text += f"{{{{bsq2|{target.name}}}}}"
         else:
             log_text += target.title(asLink=True, textlink=True)
         log_text += (
@@ -341,7 +340,7 @@ def output_edits(options=None):
         # Fill in placeholders for hidden keys.
         for prop in ("comment", "user"):
             if prop + "hidden" in recent_change:
-                recent_change[prop] = "({} hidden)".format(prop)
+                recent_change[prop] = f"({prop} hidden)"
         file_changes += (
             "\n|-\n| {{{{bsq2|{name}}}}} || {rc[revid]} || {rc[timestamp]} || "
             "{rc[user]} || <nowiki>{rc[comment]}</nowiki>".format(
@@ -401,7 +400,7 @@ def main(*args):
         ):
             if not value:
                 value = pywikibot.input(
-                    "Please enter a value for {}".format(arg), default=None
+                    f"Please enter a value for {arg}", default=None
                 )
             options[arg] = value
         else:

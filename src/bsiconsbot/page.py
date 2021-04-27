@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Objects representing various MediaWiki pages.
 
@@ -46,17 +45,17 @@ class Page(pywikibot.Page):
         @rtype: dict
         """
         if self.isRedirectPage():
-            pywikibot.log("{} is a redirect.".format(self.title()))
+            pywikibot.log(f"{self.title()} is a redirect.")
             page = self.getRedirectTarget()
         else:
             page = self
         if not page.exists():
-            pywikibot.log("{} does not exist.".format(page.title()))
+            pywikibot.log(f"{page.title()} does not exist.")
             return dict()
         try:
             return json.loads(page.get(**kwargs).strip())
         except ValueError:
-            pywikibot.error("{} does not contain valid JSON.".format(page))
+            pywikibot.error(f"{page} does not contain valid JSON.")
             raise
         except pywikibot.exceptions.PageRelatedError:
             return dict()
@@ -71,14 +70,14 @@ class Page(pywikibot.Page):
             text = text.strip()
             if self.BOT_START_END.match(self.text):
                 self.text = self.BOT_START_END.sub(
-                    r"\1\n{}\2".format(text), self.text
+                    fr"\1\n{text}\2", self.text
                 )
             else:
                 self.text = text
             self.save(minor=minor, botflag=botflag, **kwargs)
         else:
             pywikibot.error(
-                "{} does not exist. Skipping.".format(self.title())
+                f"{self.title()} does not exist. Skipping."
             )
 
     def title_regex(self, **kwargs):
@@ -94,7 +93,7 @@ class Page(pywikibot.Page):
             char1 = title[:1]
             if char1.isalpha():
                 # The first letter is not case sensative.
-                char1 = "[{}{}]".format(char1, char1.swapcase())
+                char1 = f"[{char1}{char1.swapcase()}]"
                 title = char1 + title[1:]
         return title
 
@@ -131,7 +130,7 @@ class BSiconPage(Page, pywikibot.FilePage):
         super().__init__(source, title)
         title = self.title(underscore=True, with_ns=False)
         if not (title.startswith(self.PREFIX) and title.endswith(self.SUFFIX)):
-            raise ValueError("{} is not a BSicon.".format(self))
+            raise ValueError(f"{self} is not a BSicon.")
 
     def __eq__(self, other):
         """Test if two BSicons are equal."""
