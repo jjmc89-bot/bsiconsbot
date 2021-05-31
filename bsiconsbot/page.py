@@ -58,7 +58,7 @@ class Page(pywikibot.Page):
         except ValueError:
             pywikibot.error("{} does not contain valid JSON.".format(page))
             raise
-        except pywikibot.PageRelatedError:
+        except pywikibot.exceptions.PageRelatedError:
             return dict()
 
     def save_bot_start_end(self, text, minor=False, botflag=False, **kwargs):
@@ -108,7 +108,7 @@ class Page(pywikibot.Page):
         titles.add(self.title_regex(**kwargs))
         try:
             redirects = self.backlinks(filter_redirects=True)
-        except pywikibot.CircularRedirect:
+        except pywikibot.exceptions.CircularRedirectError:
             pass
         else:
             for redirect in redirects:

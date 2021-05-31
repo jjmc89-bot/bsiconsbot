@@ -74,7 +74,7 @@ def process_options(options, site):
             bsicons_map[page] = bsiconsbot.page.BSiconPage(
                 page.getRedirectTarget()
             )
-        except (pywikibot.IsNotRedirectPage, ValueError) as e:
+        except (pywikibot.exceptions.IsNotRedirectPageError, ValueError) as e:
             pywikibot.warning(e)
             continue
         gen = chain(gen, page.globalusage(), page.usingPages())  # T199398
@@ -398,7 +398,7 @@ class BSiconsReplacer(
                     self.current_page.site, match.group("filename")
                 )
                 current_icon.title()
-            except (pywikibot.Error, ValueError):
+            except (pywikibot.exceptions.Error, ValueError):
                 continue
             new_icon = self.opt.bsicons_map.get(current_icon, None)
             if new_icon:
@@ -432,7 +432,7 @@ class BSiconsReplacer(
                         self.current_page.site, title
                     )
                     current_icon.title()
-                except (pywikibot.Error, ValueError):
+                except (pywikibot.exceptions.Error, ValueError):
                     continue
                 new_icon = self.opt.bsicons_map.get(current_icon, None)
                 if new_icon:
@@ -460,7 +460,7 @@ class BSiconsReplacer(
                     ns=self.current_page.site.namespaces.TEMPLATE,
                 )
                 template.title()
-            except (pywikibot.Error, ValueError):
+            except (pywikibot.exceptions.Error, ValueError):
                 continue
             if template in self.site_config["routemap_templates"]:
                 self._replace_routemap_files(tpl)
@@ -482,7 +482,7 @@ class BSiconsReplacer(
                         self.current_page.site, name=current_name
                     )
                     current_icon.title()
-                except (pywikibot.Error, ValueError):
+                except (pywikibot.exceptions.Error, ValueError):
                     continue
                 new_icon = self.opt.bsicons_map.get(current_icon, None)
                 if not new_icon:
@@ -515,7 +515,7 @@ class BSiconsReplacer(
                     self.current_page.site, name=current_name
                 )
                 current_icon.title()
-            except (pywikibot.Error, ValueError):
+            except (pywikibot.exceptions.Error, ValueError):
                 continue
             new_icon = self.opt.bsicons_map.get(current_icon, None)
             if not new_icon:
@@ -553,7 +553,7 @@ class BSiconsReplacer(
                         self.current_page.site, name=prefix + param_value
                     )
                     current_icon.title()
-                except (pywikibot.Error, ValueError):
+                except (pywikibot.exceptions.Error, ValueError):
                     continue
                 new_icon = self.opt.bsicons_map.get(current_icon, None)
                 if not new_icon:
