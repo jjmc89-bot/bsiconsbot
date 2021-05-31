@@ -141,7 +141,7 @@ def validate_config(config, site):
         if key in config:
             generator_factory = pagegenerators.GeneratorFactory(site)
             for item in config[key]:
-                if not generator_factory.handleArg(item):
+                if not generator_factory.handle_arg(item):
                     pywikibot.log("Invalid generator.")
                     return False
             gen = generator_factory.getCombinedGenerator()

@@ -385,9 +385,8 @@ def main(*args):
     options["site"] = pywikibot.Site()
     options["site"].login()
     gen_factory = pagegenerators.GeneratorFactory()
-    for arg in local_args:
-        if gen_factory.handleArg(arg):
-            continue
+    script_args = gen_factory.handle_args(local_args)
+    for arg in script_args:
         arg, _, value = arg.partition(":")
         arg = arg[1:]
         if arg in (
