@@ -63,7 +63,7 @@ packages = [
 ]
 readme = "README.rst"
 repository = "https://github.com/JJMC89/bsiconsbot"
-version = "0.2.dev0"
+version = "0.2.0"
 
 [tool.poetry.dependencies]
 python = "^3.7"
