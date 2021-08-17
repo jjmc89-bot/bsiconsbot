@@ -1,0 +1,10 @@
+- name: bsicons-replacer
+  command: jobs/bsicons-replacer.sh
+  image: tf-python37
+  no-filelog: true
+  schedule: '7 7 * * *'
+- name: bsicons-reporter
+  command: jobs/bsicons-reporter.sh
+  image: tf-python37
+  no-filelog: true
+  schedule: '9 9 * * *'
