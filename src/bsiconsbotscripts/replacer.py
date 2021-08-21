@@ -76,9 +76,9 @@ class Replacement:
 def process_local_config(config: ConfigJSONObject) -> LocalConfig:
     """Process the local config."""
     return LocalConfig(
-        bs_templates=config.BS_templates(dict()),
-        railway_track_templates=config.railway_track_templates(list()),
-        routemap_templates=config.routemap_templates(list()),
+        bs_templates=config.BS_templates({}),
+        railway_track_templates=config.railway_track_templates([]),
+        routemap_templates=config.routemap_templates([]),
         summary_prefix=config.summary_prefix("", require_string),
     )
 
@@ -103,7 +103,7 @@ def process_global_config(
             pywikibot.warning(e)
         else:
             gen = chain(gen, page.globalusage(), page.usingPages())  # T199398
-    replacement_map = config.replacement_map(dict(), ToReplacementMap(site))
+    replacement_map = config.replacement_map({}, ToReplacementMap(site))
     for key, value in replacement_map.items():
         # Both must be BSicons.
         try:
