@@ -96,3 +96,6 @@ max-line-length = 79  # default: 100
 
 [tool.pylint.reports]
 reports = "yes"
+
+[tool.pylint.similarities]
+min-similarity-lines = 7
