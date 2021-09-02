@@ -7,9 +7,11 @@ Generate BSicon reports.
 """
 # Author : JJMC89
 # License: MIT
+from __future__ import annotations
+
 import argparse
 import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 import pywikibot
 import pywikibot.pagegenerators
@@ -35,7 +37,7 @@ def get_page_from_size(page: pywikibot.Page) -> pywikibot.Page:
     return page
 
 
-def save_list(page_list: List[pywikibot.Page], page: Page) -> None:
+def save_list(page_list: list[pywikibot.Page], page: Page) -> None:
     """
     Write the given page_list to the given page.
 
@@ -51,7 +53,7 @@ def save_list(page_list: List[pywikibot.Page], page: Page) -> None:
         pywikibot.exception(tb=True)
 
 
-def _handle_hidden(data: Dict[str, Any]) -> None:
+def _handle_hidden(data: dict[str, Any]) -> None:
     """Fill in placeholders for hidden keys."""
     for prop in ("comment", "user"):
         if f"{prop}hidden" in data:

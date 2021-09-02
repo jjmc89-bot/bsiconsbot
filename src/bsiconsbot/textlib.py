@@ -1,6 +1,8 @@
 """Functions for manipulating wiki-text."""
+from __future__ import annotations
+
 import re
-from typing import Dict, List, Optional, Pattern, Tuple
+from typing import Dict, Pattern
 
 
 MaskType = Dict[int, str]
@@ -35,7 +37,7 @@ FILE_LINK_REGEX = r"""
 """
 
 
-def get_headers(text: str) -> List[str]:
+def get_headers(text: str) -> list[str]:
     """
     Return a list of section headers.
 
@@ -45,8 +47,8 @@ def get_headers(text: str) -> List[str]:
 
 
 def mask_text(
-    text: str, regex: Pattern[str], mask: Optional[MaskType] = None
-) -> Tuple[str, MaskType]:
+    text: str, regex: Pattern[str], mask: MaskType | None = None
+) -> tuple[str, MaskType]:
     """
     Mask text using a regex.
 
@@ -73,8 +75,8 @@ def mask_text(
 
 
 def mask_html_tags(
-    text: str, mask: Optional[MaskType] = None
-) -> Tuple[str, MaskType]:
+    text: str, mask: MaskType | None = None
+) -> tuple[str, MaskType]:
     """
     Mask HTML tags.
 
