@@ -22,10 +22,10 @@ from pywikibot.bot import (
     MultipleSitesBot,
 )
 from pywikibot.textlib import removeDisabledParts
+from pywikibot_extensions.page import Page
 from typing_extensions import TypedDict
 
 import bsiconsbot
-import bsiconsbot.page
 import bsiconsbot.textlib
 from bsiconsbot.options_classes import (
     GenToPages,
@@ -33,7 +33,7 @@ from bsiconsbot.options_classes import (
     ToReplacementMap,
     ToTemplatesConfig,
 )
-from bsiconsbot.page import BSiconPage
+from bsiconsbot.page import BSiconPage, load_config
 
 
 HTML_COMMENT = re.compile(r"<!--.*?-->", flags=re.S)
@@ -171,7 +171,7 @@ class BSiconsReplacer(
         if not site.logged_in():
             site.login()
         class_name = self.__class__.__name__
-        page = pywikibot.Page(
+        page = Page(
             site,
             f"User:{site.user()}/shutoff/{class_name}.json",
         )
@@ -192,8 +192,7 @@ class BSiconsReplacer(
         if site in self._config:
             return self._config[site]
         try:
-            config_page = bsiconsbot.page.Page(site, self.opt.local_config)
-            config_json = config_page.get_json()
+            config_json = load_config(Page(site, self.opt.local_config))
             config_dict = process_local_config(config_json)
             config_str = json.dumps({**self.opt.config, **config_dict})
             config_json = jsoncfg.loads_config(config_str)
@@ -302,7 +301,7 @@ class BSiconsReplacer(
         assert self.site_config is not None
         for tpl in wikicode.ifilter_templates():
             try:
-                template = pywikibot.Page(
+                template = Page(
                     self.current_page.site,
                     removeDisabledParts(str(tpl.name)),
                     ns=self.current_page.site.namespaces.TEMPLATE,
@@ -475,7 +474,7 @@ def main(*args: str) -> int:
     )
     parsed_args = parser.parse_args(args=script_args)
     site.login()
-    json_config = bsiconsbot.page.Page(site, parsed_args.config).get_json()
+    json_config = load_config(Page(site, parsed_args.config))
     gen, bsicons_map, config = process_global_config(json_config, site)
     if parsed_args.transcluded:
         gen = transcluded_add_generator(gen)

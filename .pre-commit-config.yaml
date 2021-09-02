@@ -86,3 +86,5 @@ repos:
     hooks:
       - id: mypy
         args: []
+        additional_dependencies:
+          - pywikibot-extensions

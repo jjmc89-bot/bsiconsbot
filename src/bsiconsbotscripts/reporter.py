@@ -16,10 +16,11 @@ from typing import Any
 import pywikibot
 import pywikibot.pagegenerators
 from jsoncfg.value_mappers import require_bool
+from pywikibot_extensions.page import Page
 
 import bsiconsbot
 from bsiconsbot.options_classes import TitleToPage
-from bsiconsbot.page import BSiconPage, Page
+from bsiconsbot.page import BSiconPage, load_config
 from bsiconsbot.textlib import get_headers
 
 
@@ -33,7 +34,7 @@ def get_page_from_size(page: pywikibot.Page) -> pywikibot.Page:
         if len(page.text) < 1e6:
             break
         i += 1
-        page = pywikibot.Page(page.site, f"{title} ({i:02d})")
+        page = Page(page.site, f"{title} ({i:02d})")
     return page
 
 
@@ -70,7 +71,7 @@ def output_log(
     bsicon_template_title: str = "bsq2",
 ) -> None:
     """Write logevents to a page."""
-    log_page = pywikibot.Page(
+    log_page = Page(
         site,
         "{prefix}/{type}/{subpage}".format(
             prefix=prefix,
@@ -136,7 +137,7 @@ def output_move_log(
 ) -> None:
     """Write move logevents to a page."""
     logtype = "move"
-    log_page = pywikibot.Page(
+    log_page = Page(
         site,
         "{prefix}/{type}/{subpage}".format(
             prefix=prefix,
@@ -217,7 +218,7 @@ def output_edits(
     prefix: str,
 ) -> None:
     """Write edits to a page."""
-    changes_page = pywikibot.Page(
+    changes_page = Page(
         site,
         "{prefix}/{subpage}".format(
             prefix=prefix,
@@ -338,7 +339,7 @@ def main(*args: str) -> int:
     )
     parsed_args = parser.parse_args(args=local_args)
     site.login()
-    config_json = parsed_args.config.get_json()
+    config_json = load_config(parsed_args.config)
     if not (parsed_args.enabled or config_json.enabled(False, require_bool)):
         pywikibot.error("Task disabled.")
         return 1

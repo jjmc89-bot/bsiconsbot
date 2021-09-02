@@ -48,7 +48,7 @@ ignore_missing_imports = true
 
 
 [tool.poetry]
-authors = ["JJMC89 <JJMC89.Wikimedia@gmail.com>"]
+authors = ["JJMC89"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
@@ -71,14 +71,15 @@ packages = [
     { include = "bsiconsbotscripts", from = "src" },
 ]
 readme = "README.rst"
-repository = "https://github.com/JJMC89/bsiconsbot"
-version = "0.2.0"
+repository = "https://github.com/jjmc89-bot/bsiconsbot"
+version = "0.3.0"
 
 [tool.poetry.dependencies]
 python = "^3.7"
 json-cfg = "0.4.2"
 mwparserfromhell = "0.6.2"
 pywikibot = {version = "6.5.0", extras = ["mysql", "mwoauth"]}
+pywikibot-extensions = "21.9.1"
 typing-extensions = "3.10.0.2"
 
 [tool.poetry.dev-dependencies]

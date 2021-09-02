@@ -10,8 +10,9 @@ import pywikibot
 import pywikibot.pagegenerators
 from jsoncfg import JSONValueMapper
 from jsoncfg.value_mappers import require_dict
+from pywikibot_extensions.page import Page, get_redirects
 
-import bsiconsbot.page
+from bsiconsbot.page import load_config
 
 
 class TitleToPage:
@@ -21,9 +22,9 @@ class TitleToPage:
         """Initialize."""
         self.site = site
 
-    def __call__(self, title: str) -> bsiconsbot.page.Page:
+    def __call__(self, title: str) -> Page:
         """Make instance behave as a simple function."""
-        return bsiconsbot.page.Page(self.site, title)
+        return Page(self.site, title)
 
 
 class _SiteJSONValueMapper(JSONValueMapper):
@@ -62,8 +63,8 @@ class ToReplacementMap(_SiteJSONValueMapper):
         if isinstance(arg, dict):
             replacement_map = arg
         elif isinstance(arg, str):
-            page = bsiconsbot.page.Page(self.site, arg)
-            replacement_map = page.get_json()(require_dict)
+            page = Page(self.site, arg)
+            replacement_map = load_config(page)(require_dict)
         else:
             raise TypeError(f"{arg!r} is not an object or string.")
         for value in replacement_map.values():
@@ -75,7 +76,7 @@ class ToReplacementMap(_SiteJSONValueMapper):
 class ToBSTemplatesConfig(_SiteJSONValueMapper):
     """Convert to BS temapltes config."""
 
-    def __call__(self, arg: object) -> dict[str, set[pywikibot.Page]]:
+    def __call__(self, arg: object) -> dict[str, frozenset[pywikibot.Page]]:
         """Make instance behave as a simple function."""
         if isinstance(arg, str):
             value = {"": [arg]}
@@ -91,8 +92,8 @@ class ToBSTemplatesConfig(_SiteJSONValueMapper):
                 templates = [templates]
             elif not isinstance(templates, list):
                 raise TypeError(f"{templates!r} is not a string or array.")
-            tpl_map[prefix] = bsiconsbot.page.get_template_pages(
-                [pywikibot.Page(self.site, tpl, 10) for tpl in templates]
+            tpl_map[prefix] = get_redirects(
+                frozenset(Page(self.site, tpl, 10) for tpl in templates)
             )
         return tpl_map
 
@@ -100,12 +101,12 @@ class ToBSTemplatesConfig(_SiteJSONValueMapper):
 class ToTemplatesConfig(_SiteJSONValueMapper):
     """Convert to templates config."""
 
-    def __call__(self, value: object) -> set[pywikibot.Page]:
+    def __call__(self, value: object) -> frozenset[pywikibot.Page]:
         """Make instance behave as a simple function."""
         if isinstance(value, str):
             value = [value]
         elif not isinstance(value, list):
             raise TypeError(f"{value!r} is not a string or array.")
-        return bsiconsbot.page.get_template_pages(
-            [pywikibot.Page(self.site, tpl, 10) for tpl in value]
+        return get_redirects(
+            frozenset(Page(self.site, tpl, 10) for tpl in value)
         )

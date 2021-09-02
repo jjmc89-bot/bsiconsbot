@@ -1,6 +1,6 @@
 [[package]]
 name = "astroid"
-version = "2.7.2"
+version = "2.7.3"
 description = "An abstract syntax tree for Python with inference support."
 category = "dev"
 optional = false
@@ -212,7 +212,7 @@ signedtoken = ["cryptography (>=3.0.0,<4)", "pyjwt (>=2.0.0,<3)"]
 
 [[package]]
 name = "platformdirs"
-version = "2.2.0"
+version = "2.3.0"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 category = "dev"
 optional = false
@@ -311,6 +311,17 @@ mysql = ["PyMySQL (>=0.6.7,<1.0.0)", "PyMySQL (>=1.0.0)"]
 scripts = ["mwparserfromhell (>=0.5.0)", "mwparserfromhell (>=0.5.0)", "memento_client (>=0.5.1,!=0.6.0)"]
 "weblinkchecker.py" = ["memento_client (>=0.5.1,!=0.6.0)"]
 wikitextparser = ["wikitextparser (>=0.47.5)", "wikitextparser (>=0.47.0)"]
+
+[[package]]
+name = "pywikibot-extensions"
+version = "21.9.1"
+description = "Extends the Pywikibot library"
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+pywikibot = ">=6.5.0,<7.0.0"
 
 [[package]]
 name = "pyyaml"
@@ -441,12 +452,12 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "04e7f1b9b400e22a6884df7424bb5fc433c096c40f8f51df92b2234abca4052d"
+content-hash = "bd1b24ebd240607cd4df1ef03f6b5b865547a9535acb0467720d0a9d67679474"
 
 [metadata.files]
 astroid = [
-    {file = "astroid-2.7.2-py3-none-any.whl", hash = "sha256:ecc50f9b3803ebf8ea19aa2c6df5622d8a5c31456a53c741d3be044d96ff0948"},
-    {file = "astroid-2.7.2.tar.gz", hash = "sha256:b6c2d75cd7c2982d09e7d41d70213e863b3ba34d3bd4014e08f167cee966e99e"},
+    {file = "astroid-2.7.3-py3-none-any.whl", hash = "sha256:dc1e8b28427d6bbef6b8842b18765ab58f558c42bb80540bd7648c98412af25e"},
+    {file = "astroid-2.7.3.tar.gz", hash = "sha256:3b680ce0419b8a771aba6190139a3998d14b413852506d99aff8dc2bf65ee67c"},
 ]
 "backports.entry-points-selectable" = [
     {file = "backports.entry_points_selectable-1.1.0-py2.py3-none-any.whl", hash = "sha256:a6d9a871cde5e15b4c4a53e3d43ba890cc6861ec1332c9c2428c92f977192acc"},
@@ -563,8 +574,8 @@ oauthlib = [
     {file = "oauthlib-3.1.1.tar.gz", hash = "sha256:8f0215fcc533dd8dd1bee6f4c412d4f0cd7297307d43ac61666389e3bc3198a3"},
 ]
 platformdirs = [
-    {file = "platformdirs-2.2.0-py3-none-any.whl", hash = "sha256:4666d822218db6a262bdfdc9c39d21f23b4cfdb08af331a81e92751daf6c866c"},
-    {file = "platformdirs-2.2.0.tar.gz", hash = "sha256:632daad3ab546bd8e6af0537d09805cec458dce201bccfe23012df73332e181e"},
+    {file = "platformdirs-2.3.0-py3-none-any.whl", hash = "sha256:8003ac87717ae2c7ee1ea5a84a1a61e87f3fbd16eb5aadba194ea30a9019f648"},
+    {file = "platformdirs-2.3.0.tar.gz", hash = "sha256:15b056538719b1c94bdaccb29e5f81879c7f7f0f4a153f46086d155dffcd4f0f"},
 ]
 pre-commit = [
     {file = "pre_commit-2.14.1-py2.py3-none-any.whl", hash = "sha256:a22d12a02da4d8df314187dfe7a61bda6291d57992060522feed30c8cd658b68"},
@@ -584,6 +595,10 @@ pymysql = [
 ]
 pywikibot = [
     {file = "pywikibot-6.5.0.tar.gz", hash = "sha256:d14f7e6db108e88477b41b00b9fc6a439e106433ffb0c9723b0aa173562d5829"},
+]
+pywikibot-extensions = [
+    {file = "pywikibot-extensions-21.9.1.tar.gz", hash = "sha256:30ccef42d2fdea54a3659f27fd22fc987c7bbc0769f6e07c01af38dfe061584d"},
+    {file = "pywikibot_extensions-21.9.1-py3-none-any.whl", hash = "sha256:bd4171d72d946912c786712ea3855d074bb8ff943d9e2019137020c7c3dce44b"},
 ]
 pyyaml = [
     {file = "PyYAML-5.4.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:3b2b1824fe7112845700f815ff6a489360226a5609b96ec2190a45e62a9fc922"},
