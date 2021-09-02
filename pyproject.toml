@@ -34,8 +34,17 @@ disallow_any_generics = true
 disallow_incomplete_defs = true
 disallow_untyped_defs = true
 no_implicit_optional = true
+show_error_codes = true
 warn_redundant_casts = true
 warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+    "jsoncfg.*",
+    "mwparserfromhell.*",
+    "pywikibot.*",
+]
+ignore_missing_imports = true
 
 
 [tool.poetry]
