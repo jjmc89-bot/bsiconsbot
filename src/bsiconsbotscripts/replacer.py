@@ -1,12 +1,14 @@
 """Replace BSicons."""
 # Author : JJMC89
 # License: MIT
+from __future__ import annotations
+
 import argparse
 import json
 import re
 from dataclasses import dataclass
 from itertools import chain
-from typing import Any, Dict, Iterable, List, Optional, Pattern, Set, Tuple
+from typing import Any, Iterable, Pattern
 
 import jsoncfg
 import mwparserfromhell
@@ -44,9 +46,9 @@ ROUTEMAP_BSICON = re.compile(
 class LocalConfig(TypedDict):
     """Local configuration."""
 
-    bs_templates: Dict[str, List[str]]
-    railway_track_templates: List[str]
-    routemap_templates: List[str]
+    bs_templates: dict[str, list[str]]
+    railway_track_templates: list[str]
+    routemap_templates: list[str]
     summary_prefix: str
 
 
@@ -54,10 +56,10 @@ class LocalConfig(TypedDict):
 class SiteConfig:
     """Site configuration."""
 
-    bs_templates: Dict[str, Set[pywikibot.Page]]
+    bs_templates: dict[str, set[pywikibot.Page]]
     file_regex: Pattern[str]
-    railway_track_templates: Set[pywikibot.Page]
-    routemap_templates: Set[pywikibot.Page]
+    railway_track_templates: set[pywikibot.Page]
+    routemap_templates: set[pywikibot.Page]
     summary_prefix: str
 
 
@@ -85,8 +87,8 @@ def process_local_config(config: ConfigJSONObject) -> LocalConfig:
 
 def process_global_config(
     config: ConfigJSONObject, site: pywikibot.site.APISite
-) -> Tuple[
-    Iterable[pywikibot.Page], Dict[BSiconPage, BSiconPage], LocalConfig
+) -> tuple[
+    Iterable[pywikibot.Page], dict[BSiconPage, BSiconPage], LocalConfig
 ]:
     """Process the global config."""
     redirects = config.redirects(set(), require_list, GenToPages(site))
@@ -157,8 +159,8 @@ class BSiconsReplacer(
     def __init__(self, **kwargs: Any) -> None:
         """Initialize."""
         super().__init__(**kwargs)
-        self._config: Dict[pywikibot.site.APISite, Optional[SiteConfig]] = {}
-        self._disabled_sites: Set[pywikibot.site.APISite] = set()
+        self._config: dict[pywikibot.site.APISite, SiteConfig | None] = {}
+        self._disabled_sites: set[pywikibot.site.APISite] = set()
 
     @property
     def site_disabled(self) -> bool:
@@ -184,7 +186,7 @@ class BSiconsReplacer(
         return False
 
     @property
-    def site_config(self) -> Optional[SiteConfig]:
+    def site_config(self) -> SiteConfig | None:
         """Return the site configuration."""
         site = self.current_page.site
         if site in self._config:

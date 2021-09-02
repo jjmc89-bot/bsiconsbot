@@ -3,8 +3,10 @@ Objects representing various MediaWiki pages.
 
 This module extends pywikibot.page.
 """
+from __future__ import annotations
+
 import re
-from typing import Any, Iterable, Optional, Set, Union
+from typing import Any, Iterable, Union
 
 import jsoncfg
 import pywikibot
@@ -18,7 +20,7 @@ PageSource = Union[
 
 def get_template_pages(
     templates: Iterable[pywikibot.Page],
-) -> Set[pywikibot.Page]:
+) -> set[pywikibot.Page]:
     """
     Given an iterable of templates, return a set of pages.
 
@@ -64,7 +66,7 @@ class Page(pywikibot.Page):
         self,
         text: str,
         minor: bool = False,
-        botflag: Optional[bool] = False,
+        botflag: bool | None = False,
         **kwargs: Any,
     ) -> None:
         """

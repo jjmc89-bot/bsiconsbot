@@ -2,7 +2,9 @@
 # Author : JJMC89
 # License: MIT
 # pylint: disable=missing-class-docstring,too-few-public-methods
-from typing import Any, Dict, Set
+from __future__ import annotations
+
+from typing import Any
 
 import pywikibot
 import pywikibot.pagegenerators
@@ -40,7 +42,7 @@ class GenToPages(_SiteJSONValueMapper):
         super().__init__(site)
         self.gen_factory = pywikibot.pagegenerators.GeneratorFactory(site)
 
-    def __call__(self, arg: object) -> Set[pywikibot.Page]:
+    def __call__(self, arg: object) -> set[pywikibot.Page]:
         """Make instance behave as a simple function."""
         if not isinstance(arg, list):
             raise TypeError(f"{arg!r} is not an array.")
@@ -55,7 +57,7 @@ class GenToPages(_SiteJSONValueMapper):
 class ToReplacementMap(_SiteJSONValueMapper):
     """Convert to BSicons replacement map."""
 
-    def __call__(self, arg: object) -> Dict[str, str]:
+    def __call__(self, arg: object) -> dict[str, str]:
         """Make instance behave as a simple function."""
         if isinstance(arg, dict):
             replacement_map = arg
@@ -73,7 +75,7 @@ class ToReplacementMap(_SiteJSONValueMapper):
 class ToBSTemplatesConfig(_SiteJSONValueMapper):
     """Convert to BS temapltes config."""
 
-    def __call__(self, arg: object) -> Dict[str, Set[pywikibot.Page]]:
+    def __call__(self, arg: object) -> dict[str, set[pywikibot.Page]]:
         """Make instance behave as a simple function."""
         if isinstance(arg, str):
             value = {"": [arg]}
@@ -98,7 +100,7 @@ class ToBSTemplatesConfig(_SiteJSONValueMapper):
 class ToTemplatesConfig(_SiteJSONValueMapper):
     """Convert to templates config."""
 
-    def __call__(self, value: object) -> Set[pywikibot.Page]:
+    def __call__(self, value: object) -> set[pywikibot.Page]:
         """Make instance behave as a simple function."""
         if isinstance(value, str):
             value = [value]
