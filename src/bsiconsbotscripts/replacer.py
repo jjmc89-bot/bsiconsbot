@@ -114,7 +114,7 @@ def process_global_config(
         except ValueError as e:
             pywikibot.warning(e)
         else:
-            gen = chain(gen, page.globalusage(), page.usingPages())  # T199398i
+            gen = chain(gen, page.globalusage(), page.usingPages())  # T199398
     local_config = process_local_config(config)
     return gen, bsicons_map, local_config
 
@@ -193,8 +193,9 @@ class BSiconsReplacer(
             return self._config[site]
         try:
             config_json = load_config(Page(site, self.opt.local_config))
-            config_dict = process_local_config(config_json)
-            config_str = json.dumps({**self.opt.config, **config_dict})
+            config_dict1 = process_local_config(config_json)
+            config_dict2 = {k: v for k, v in config_dict1.items() if v}
+            config_str = json.dumps({**self.opt.config, **config_dict2})
             config_json = jsoncfg.loads_config(config_str)
             self._config[site] = process_site_config(config_json, site)
         except (
