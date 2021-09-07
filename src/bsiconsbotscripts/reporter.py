@@ -189,7 +189,6 @@ def output_move_log(
             " || {r[logid]} || {r[timestamp]} || {r[user]} || "
             "<nowiki>{r[comment]}</nowiki>".format(r=logevent.data)
         )
-        log_text += row_text
     if log_text:
         log_text = (
             f'{{| class="wikitable sortable mw-collapsible mw-collapsed"'
