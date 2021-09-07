@@ -70,7 +70,7 @@ packages = [
     { include = "bsiconsbot", from = "src" },
     { include = "bsiconsbotscripts", from = "src" },
 ]
-readme = "README.rst"
+readme = "README.md"
 repository = "https://github.com/jjmc89-bot/bsiconsbot"
 version = "0.3.0"
 
