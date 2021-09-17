@@ -73,11 +73,7 @@ def output_log(
     """Write logevents to a page."""
     log_page = Page(
         site,
-        "{prefix}/{type}/{subpage}".format(
-            prefix=prefix,
-            type=logtype,
-            subpage=start.strftime("%Y-%m"),
-        ),
+        f"{prefix}/{logtype}/{start.strftime('%Y-%m')}",
     )
     if start.date().isoformat() in get_headers(log_page.text):
         return
@@ -139,11 +135,7 @@ def output_move_log(
     logtype = "move"
     log_page = Page(
         site,
-        "{prefix}/{type}/{subpage}".format(
-            prefix=prefix,
-            type=logtype,
-            subpage=start.strftime("%Y-%m"),
-        ),
+        f"{prefix}/{logtype}/{start.strftime('%Y-%m')}",
     )
     if start.date().isoformat() in get_headers(log_page.text):
         return
@@ -219,10 +211,7 @@ def output_edits(
     """Write edits to a page."""
     changes_page = Page(
         site,
-        "{prefix}/{subpage}".format(
-            prefix=prefix,
-            subpage=start.strftime("%Y-%m"),
-        ),
+        f"{prefix}/{start.strftime('%Y-%m')}",
     )
     if start.date().isoformat() in get_headers(changes_page.text):
         return
