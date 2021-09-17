@@ -228,9 +228,9 @@ class BSiconsReplacer(
         self.replace_template_files(wikicode)
         self.put_current(
             bsiconsbot.textlib.unmask_text(str(wikicode), mask),
-            summary="{}: {}".format(
-                self.site_config.summary_prefix,
-                ", ".join(map(str, self.current_page.replacements)),
+            summary=(
+                f"{self.site_config.summary_prefix}: "
+                f"{', '.join(map(str, self.current_page.replacements))}",
             ),
         )
 
