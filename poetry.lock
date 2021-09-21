@@ -315,7 +315,7 @@ wikitextparser = ["wikitextparser (>=0.47.5)", "wikitextparser (>=0.47.0)"]
 
 [[package]]
 name = "pywikibot-extensions"
-version = "21.9.1"
+version = "21.9.21"
 description = "Extends the Pywikibot library"
 category = "main"
 optional = false
@@ -453,7 +453,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "39a0a9df8e5b00467feb99d0a01a2a27cff85201ccbfdff840fde3e12de4c47a"
+content-hash = "d082fba44ede18ddf7b5403e1dcc86a279e307572322ed21edbee8a656a9e707"
 
 [metadata.files]
 astroid = [
@@ -602,8 +602,8 @@ pywikibot = [
     {file = "pywikibot-6.6.0.tar.gz", hash = "sha256:a31ed747c0070da4abcde2074af2fba6fd3b59920c6e89208b3659901e36a694"},
 ]
 pywikibot-extensions = [
-    {file = "pywikibot-extensions-21.9.1.tar.gz", hash = "sha256:30ccef42d2fdea54a3659f27fd22fc987c7bbc0769f6e07c01af38dfe061584d"},
-    {file = "pywikibot_extensions-21.9.1-py3-none-any.whl", hash = "sha256:bd4171d72d946912c786712ea3855d074bb8ff943d9e2019137020c7c3dce44b"},
+    {file = "pywikibot-extensions-21.9.21.tar.gz", hash = "sha256:ee9c20b2ed11ee99d22d0a44178a30c4caab46b35357c2e722ff366060102710"},
+    {file = "pywikibot_extensions-21.9.21-py3-none-any.whl", hash = "sha256:d3883be8bb65fd5d55fd0b992af763da21c163d06e24f68e7a712f8a4764cb62"},
 ]
 pyyaml = [
     {file = "PyYAML-5.4.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:3b2b1824fe7112845700f815ff6a489360226a5609b96ec2190a45e62a9fc922"},
