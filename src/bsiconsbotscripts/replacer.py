@@ -72,7 +72,7 @@ class Replacement:
 
     def __str__(self) -> str:
         """Represent as a string."""
-        return "\u2192".join({self.old.name, self.new.name})
+        return f"{self.old.name}\u2192{self.new.name}"
 
 
 def process_local_config(config: ConfigJSONObject) -> LocalConfig:
