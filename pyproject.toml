@@ -78,7 +78,7 @@ typing-extensions = "4.1.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "2.18.1"
-pylint = "2.13.4"
+pylint = "2.13.5"
 
 [tool.poetry.scripts]
 bsicons-reporter = "bsiconsbotscripts.reporter:main"
