@@ -287,7 +287,7 @@ rsa = ["cryptography"]
 
 [[package]]
 name = "pywikibot"
-version = "7.2.0"
+version = "7.3.0"
 description = "Python MediaWiki Bot Framework"
 category = "main"
 optional = false
@@ -313,7 +313,7 @@ mwoauth = ["mwoauth (>=0.2.4,!=0.3.1)"]
 mwparserfromhell = ["mwparserfromhell (>=0.5.0)"]
 mysql = ["PyMySQL (>=0.7.11,<1.0.0)", "PyMySQL (>=1.0.0)"]
 "patrol.py" = ["mwparserfromhell (>=0.5.0)"]
-scripts = ["mwparserfromhell (>=0.5.0)", "mwparserfromhell (>=0.5.0)", "memento_client (>=0.5.1,!=0.6.0)"]
+scripts = ["mwparserfromhell (>=0.5.0)", "memento_client (>=0.5.1,!=0.6.0)"]
 "weblinkchecker.py" = ["memento_client (>=0.5.1,!=0.6.0)"]
 wikitextparser = ["wikitextparser (>=0.47.5)", "wikitextparser (>=0.47.0)"]
 
@@ -464,7 +464,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "c124fb16ea50cf24d7e458cc9072fd53ecddb06fd585a7e1f2e4e9552c8a1506"
+content-hash = "97dab4490807ad9f48d5bdea103df72c5154aa3ad80dd6de3b36f3c276a46be8"
 
 [metadata.files]
 astroid = [
@@ -630,7 +630,7 @@ pymysql = [
     {file = "PyMySQL-1.0.2.tar.gz", hash = "sha256:816927a350f38d56072aeca5dfb10221fe1dc653745853d30a216637f5d7ad36"},
 ]
 pywikibot = [
-    {file = "pywikibot-7.2.0.tar.gz", hash = "sha256:e7cd0bd9ea26c40eb45169b37e3f2845d075f3e171b77da1731bca788719699a"},
+    {file = "pywikibot-7.3.0.tar.gz", hash = "sha256:69e804be46c9f79b350cbd63a519ff26ba08e26e35ddf9da9eb7cfe8e3a0cf14"},
 ]
 pywikibot-extensions = [
     {file = "pywikibot-extensions-22.3.26.tar.gz", hash = "sha256:619647c6e83bd5113d21e4254c434a5243cf8decab31c809016934fd11a16b3f"},
