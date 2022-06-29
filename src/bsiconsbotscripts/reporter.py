@@ -51,7 +51,7 @@ def save_list(page_list: list[pywikibot.Page], page: Page) -> None:
     try:
         page.save_bot_start_end(list_text, summary="Updating list", force=True)
     except pywikibot.exceptions.Error:
-        pywikibot.exception(tb=True)
+        pywikibot.exception()
 
 
 def _handle_hidden(data: dict[str, Any]) -> None:
@@ -121,7 +121,7 @@ def output_log(
             force=True,
         )
     except pywikibot.exceptions.Error:
-        pywikibot.exception(tb=True)
+        pywikibot.exception()
 
 
 def output_move_log(
@@ -198,7 +198,7 @@ def output_move_log(
             force=True,
         )
     except pywikibot.exceptions.Error:
-        pywikibot.exception(tb=True)
+        pywikibot.exception()
 
 
 def output_edits(
@@ -261,7 +261,7 @@ def output_edits(
             force=True,
         )
     except pywikibot.exceptions.Error:
-        pywikibot.exception(tb=True)
+        pywikibot.exception()
 
 
 def main(*args: str) -> int:
