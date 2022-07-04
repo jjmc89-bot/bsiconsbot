@@ -77,7 +77,7 @@ json-cfg = "0.4.2"
 mwparserfromhell = "0.6.4"
 pywikibot = {version = "7.4.0", extras = ["mysql", "mwoauth"]}
 pywikibot-extensions = "22.6.28"
-typing-extensions = "4.2.0"
+typing-extensions = "4.3.0"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "2.19.0"
