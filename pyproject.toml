@@ -75,7 +75,7 @@ version = "0.4.0"
 python = "^3.7"
 json-cfg = "0.4.2"
 mwparserfromhell = "0.6.4"
-pywikibot = {version = "7.5.0", extras = ["mysql", "mwoauth"]}
+pywikibot = {version = "7.6.0", extras = ["mysql", "mwoauth"]}
 pywikibot-extensions = "22.6.28"
 typing-extensions = "4.3.0"
 
