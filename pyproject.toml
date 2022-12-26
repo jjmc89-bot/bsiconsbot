@@ -79,7 +79,7 @@ pywikibot-extensions = "22.11.12"
 typing-extensions = "4.4.0"
 
 [tool.poetry.dev-dependencies]
-pre-commit = "2.20.0"
+pre-commit = "2.21.0"
 pylint = "2.13.9"
 
 [tool.poetry.scripts]
