@@ -24,7 +24,7 @@ jobs:
     - name: Setup Poetry
       uses: Gr1N/setup-poetry@v8
     - name: Checkout
-      uses: actions/checkout@v3.2.0
+      uses: actions/checkout@v3.3.0
       with:
         persist-credentials: false
     - name: Install
