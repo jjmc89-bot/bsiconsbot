@@ -43,7 +43,7 @@ class BSiconPage(FilePage):
         super().__init__(source, title)
         title = self.title(underscore=True, with_ns=False)
         if not (title.startswith(self.PREFIX) and title.endswith(self.SUFFIX)):
-            raise ValueError(f"'{self.title()}' is not a BSicon.")
+            raise ValueError(f"{self.title()!r} is not a BSicon.")
 
     def __eq__(self, other: object) -> bool:
         """Test if two BSicons are equal."""
