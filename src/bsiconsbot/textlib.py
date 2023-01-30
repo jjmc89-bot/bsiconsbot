@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 import re
-from typing import Dict, Pattern
+from re import Pattern
 
 
-MaskType = Dict[int, str]
+MaskType = dict[int, str]
 
 
 # from pywikibot.textlib

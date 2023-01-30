@@ -6,9 +6,11 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from collections.abc import Iterable  # pylint: disable=no-name-in-module
 from dataclasses import dataclass
 from itertools import chain
-from typing import Any, Iterable, Pattern
+from re import Pattern
+from typing import Any, TypedDict
 
 import jsoncfg
 import mwparserfromhell
@@ -23,7 +25,6 @@ from pywikibot.bot import (
 )
 from pywikibot.textlib import removeDisabledParts
 from pywikibot_extensions.page import Page
-from typing_extensions import TypedDict
 
 import bsiconsbot
 import bsiconsbot.textlib
