@@ -73,7 +73,7 @@ pywikibot = {version = "8.0.0", extras = ["mysql", "mwoauth"]}
 pywikibot-extensions = "23.1.21"
 
 [tool.poetry.dev-dependencies]
-pylint = "2.13.9"
+pylint = "2.16.1"
 
 [tool.poetry.scripts]
 bsicons-reporter = "bsiconsbotscripts.reporter:main"
