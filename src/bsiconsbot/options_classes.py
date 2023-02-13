@@ -85,7 +85,7 @@ class ToBSTemplatesConfig(_SiteJSONValueMapper):
         elif isinstance(arg, dict):
             value = arg
         else:
-            raise TypeError(f"{value!r} is not a string, array, or object.")
+            raise TypeError(f"{arg!r} is not a string, array, or object.")
         tpl_map = {}
         for prefix, templates in value.items():
             if isinstance(templates, str):
