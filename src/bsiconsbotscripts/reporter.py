@@ -331,11 +331,11 @@ def main(*args: str) -> int:
     if not (parsed_args.enabled or config_json.enabled(False, require_bool)):
         pywikibot.error("Task disabled.")
         return 1
-    file_redirects = pywikibot.pagegenerators.MySQLPageGenerator(  # nosec
+    file_redirects = pywikibot.pagegenerators.MySQLPageGenerator(
         "select page_namespace, page_title "
         "from page "
         "where page_namespace = 6 "
-        f"and page_title like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "
+        f"and page_title like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "  # nosec  # noqa: E501  # pylint: disable=line-too-long
         "and page_is_redirect = 1 "
         "order by page_title",
         site=site,
@@ -364,10 +364,10 @@ def main(*args: str) -> int:
     output_edits(
         site=site, start=start, end=end, prefix=parsed_args.changes_page_prefix
     )
-    large_files = pywikibot.pagegenerators.MySQLPageGenerator(  # nosec
+    large_files = pywikibot.pagegenerators.MySQLPageGenerator(
         "select 6, img_name "
         "from image "
-        f"where img_name like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "
+        f"where img_name like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "  # nosec  # noqa: E501  # pylint: disable=line-too-long
         f"and img_size > {parsed_args.large_size} "
         "order by img_name",
         site=site,
