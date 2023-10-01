@@ -105,7 +105,7 @@ def process_global_config(
         except (ValueError, pywikibot.exceptions.IsNotRedirectPageError) as e:
             pywikibot.warning(e)
         else:
-            gen = chain(gen, page.globalusage(), page.using_pages())  # T199398
+            gen = chain(gen, page.globalusage(), page.using_pages())
     replacement_map = config.replacement_map({}, ToReplacementMap(site))
     for key, value in replacement_map.items():
         # Both must be BSicons.
@@ -115,7 +115,7 @@ def process_global_config(
         except ValueError as e:
             pywikibot.warning(e)
         else:
-            gen = chain(gen, page.globalusage(), page.using_pages())  # T199398
+            gen = chain(gen, page.globalusage(), page.using_pages())
     local_config = process_local_config(config)
     return gen, bsicons_map, local_config
 
