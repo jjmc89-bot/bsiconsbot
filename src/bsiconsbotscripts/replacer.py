@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from collections.abc import Iterable  # pylint: disable=no-name-in-module
+from collections.abc import Iterable
 from dataclasses import dataclass
 from itertools import chain
 from re import Pattern
