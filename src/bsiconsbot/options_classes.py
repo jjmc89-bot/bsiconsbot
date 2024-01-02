@@ -1,7 +1,4 @@
 """Classes for working with commmand line arguments and json-cfg."""
-# Author : JJMC89
-# License: MIT
-# pylint: disable=too-few-public-methods
 from __future__ import annotations
 
 from typing import Any

@@ -5,8 +5,6 @@ Generate BSicon reports.
     - List BSicon redirects
     - List large BSicons
 """
-# Author : JJMC89
-# License: MIT
 from __future__ import annotations
 
 import argparse
@@ -335,7 +333,7 @@ def main(*args: str) -> int:
         "select page_namespace, page_title "
         "from page "
         "where page_namespace = 6 "
-        f"and page_title like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "  # nosec  # noqa: E501  # pylint: disable=line-too-long
+        f"and page_title like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "  # nosec  # noqa: E501
         "and page_is_redirect = 1 "
         "order by page_title",
         site=site,
@@ -367,7 +365,7 @@ def main(*args: str) -> int:
     large_files = pywikibot.pagegenerators.MySQLPageGenerator(
         "select 6, img_name "
         "from image "
-        f"where img_name like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "  # nosec  # noqa: E501  # pylint: disable=line-too-long
+        f"where img_name like '{BSiconPage.PREFIX}%{BSiconPage.SUFFIX}' "  # nosec  # noqa: E501
         f"and img_size > {parsed_args.large_size} "
         "order by img_name",
         site=site,
