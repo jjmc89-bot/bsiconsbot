@@ -69,32 +69,6 @@ mwparserfromhell = "0.6.5"
 pywikibot = {version = "8.6.0", extras = ["mysql", "mwoauth"]}
 pywikibot-extensions = "23.3.25"
 
-[tool.poetry.dev-dependencies]
-pylint = "3.0.3"
-
 [tool.poetry.scripts]
 bsicons-reporter = "bsiconsbotscripts.reporter:main"
 bsicons-replacer = "bsiconsbotscripts.replacer:main"
-
-
-[tool.pylint]
-
-[tool.pylint.main]
-disable = [
-    "too-many-arguments",
-]
-# Use multiple processes to speed up Pylint.
-jobs = 0  # default: 1
-
-[tool.pylint.basic]
-# Good variable names which should always be accepted
-good-names = "e,i,j,k,_"  # default: i,j,k,ex,Run,_
-
-[tool.pylint.format]
-max-line-length = 79  # default: 100
-
-[tool.pylint.reports]
-reports = "yes"
-
-[tool.pylint.similarities]
-min-similarity-lines = 7

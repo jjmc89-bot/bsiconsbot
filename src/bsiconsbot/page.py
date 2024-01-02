@@ -28,7 +28,7 @@ def load_config(page: pywikibot.Page, **kwargs: Any) -> ConfigJSONObject:
         return _empty
 
 
-class BSiconPage(FilePage):  # pylint: disable=too-many-ancestors
+class BSiconPage(FilePage):
     """Represents a BSicon file description page."""
 
     PREFIX = "BSicon_"
