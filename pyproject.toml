@@ -4,12 +4,12 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.black]
-target-version = ["py39"]
+target-version = ["py311"]
 line-length = 79  # default: 88
 
 
 [tool.isort]
-py_version = 39
+py_version = 311
 add_imports = ["from __future__ import annotations"]
 atomic = true
 ensure_newline_before_comments = true
@@ -21,7 +21,7 @@ use_parentheses = true
 
 
 [tool.mypy]
-python_version = 3.9
+python_version = 3.11
 enable_error_code = [
     "ignore-without-code",
 ]
@@ -63,7 +63,7 @@ repository = "https://github.com/jjmc89-bot/bsiconsbot"
 version = "0.4.0"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 json-cfg = "0.4.2"
 mwparserfromhell = "0.6.5"
 pywikibot = {version = "8.6.0", extras = ["mysql", "mwoauth"]}
