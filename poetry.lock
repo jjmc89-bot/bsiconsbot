@@ -264,10 +264,7 @@ mwoauth = {version = ">=0.2.4,<0.3.1 || >0.3.1", optional = true, markers = "ext
 mwparserfromhell = ">=0.5.2"
 PyMySQL = {version = ">=0.9.3", optional = true, markers = "extra == \"mysql\""}
 requests = {version = ">=2.21.0", markers = "python_version >= \"3.7\""}
-setuptools = [
-    {version = ">=48.0.0", markers = "python_version >= \"3.10\""},
-    {version = ">=40.8.0", markers = "python_version >= \"3.7\" and python_version < \"3.10\""},
-]
+setuptools = {version = ">=48.0.0", markers = "python_version >= \"3.10\""}
 
 [package.extras]
 create-isbn-edition-py = ["isbnlib", "unidecode"]
@@ -374,5 +371,5 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.9"
-content-hash = "7de28c62c61164b1a10f5caf7107b3ed70ec7af94ba744c13b6a18279fe10c2a"
+python-versions = "^3.11"
+content-hash = "933087966daba0a875c8ef2f9dacf76b8b08d14ca5061fee17097c8df5028a2a"
