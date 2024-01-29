@@ -5,6 +5,7 @@ Generate BSicon reports.
     - List BSicon redirects
     - List large BSicons
 """
+
 from __future__ import annotations
 
 import argparse

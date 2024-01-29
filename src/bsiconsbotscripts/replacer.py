@@ -1,4 +1,5 @@
 """Replace BSicons."""
+
 # Author : JJMC89
 # License: MIT
 from __future__ import annotations
