@@ -1,4 +1,5 @@
 """Functions for manipulating wiki-text."""
+
 from __future__ import annotations
 
 import re

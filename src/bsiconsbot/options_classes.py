@@ -1,4 +1,5 @@
 """Classes for working with commmand line arguments and json-cfg."""
+
 from __future__ import annotations
 
 from typing import Any
