@@ -291,7 +291,7 @@ class BSiconsReplacer(
                         Replacement(current_icon, new_icon)
                     )
             if self.current_page.replacements:
-                tag.contents = "\n".join(lines) + "\n"
+                tag.contents = "\n".join(lines) + "\n"  # type: ignore[assignment]  # noqa: E501
 
     def replace_template_files(
         self, wikicode: mwparserfromhell.wikicode.Wikicode
@@ -347,7 +347,7 @@ class BSiconsReplacer(
                 self.current_page.replacements.add(
                     Replacement(current_icon, new_icon)
                 )
-            param.value = param_value
+            param.value = param_value  # type: ignore[assignment]
 
     def _replace_rt_template_files(
         self, tpl: mwparserfromhell.nodes.Template
@@ -382,7 +382,7 @@ class BSiconsReplacer(
                     continue
             else:
                 replacement = new_icon.name
-            param.value = str(param.value).replace(param_value, replacement)
+            param.value = str(param.value).replace(param_value, replacement)  # type: ignore[assignment]  # noqa: E501
             self.current_page.replacements.add(
                 Replacement(current_icon, new_icon)
             )
@@ -412,7 +412,7 @@ class BSiconsReplacer(
                     continue
                 # The replacement must have the same prefix.
                 if new_icon.name[: len(prefix)] == prefix:
-                    param.value = str(param.value).replace(
+                    param.value = str(param.value).replace(  # type: ignore[assignment]  # noqa: E501
                         param_value, new_icon.name[len(prefix) :]  # noqa: E203
                     )
                     self.current_page.replacements.add(
