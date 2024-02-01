@@ -32,7 +32,6 @@ warn_return_any = false
 [[tool.mypy.overrides]]
 module = [
     "jsoncfg.*",
-    "mwparserfromhell.*",
     "pywikibot.*",
 ]
 ignore_missing_imports = true
