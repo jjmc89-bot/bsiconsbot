@@ -2,13 +2,13 @@
 
 [[package]]
 name = "certifi"
-version = "2023.11.17"
+version = "2024.2.2"
 description = "Python package for providing Mozilla's CA Bundle."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "certifi-2023.11.17-py3-none-any.whl", hash = "sha256:e036ab49d5b79556f99cfc2d9320b34cfbe5be05c5871b51de9329f0603b0474"},
-    {file = "certifi-2023.11.17.tar.gz", hash = "sha256:9b469f3a900bf28dc19b8cfbf8019bf47f7fdd1a65a1d4ffb98fc14166beb4d1"},
+    {file = "certifi-2024.2.2-py3-none-any.whl", hash = "sha256:dc383c07b76109f368f6106eee2b593b04a011ea4d55f652c6ca24a754d1cdd1"},
+    {file = "certifi-2024.2.2.tar.gz", hash = "sha256:0569859f95fc761b18b45ef421b1290a0f65f147e92a1e5eb3e635f9a5e4e66f"},
 ]
 
 [[package]]
@@ -181,12 +181,9 @@ files = [
     {file = "mwparserfromhell-0.6.6-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:59633d3cc09993af75ced8dfbd6800e1e38e64620851a095575621548448875c"},
     {file = "mwparserfromhell-0.6.6-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:007d0859e5467241b73c6e974df039a074609ce4e2b9df8c2263a8920554d032"},
     {file = "mwparserfromhell-0.6.6-cp311-cp311-win32.whl", hash = "sha256:dbe5976b1b524e26aa2eb71b6219960f2578f56b536c68e0a79deb63e3b7f710"},
-    {file = "mwparserfromhell-0.6.6-cp311-cp311-win_amd64.whl", hash = "sha256:063c1e79befd1f55d77c358e0f5006f5ecf88ddf218ff6af55188d686139330e"},
     {file = "mwparserfromhell-0.6.6-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:910d36bc70e8bea758380e75c12fd47626b295abec9f73a6099d8f937a649e77"},
     {file = "mwparserfromhell-0.6.6-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d2febd92a55a3f19b461833267726cb81429c3d6cb0006ad1691dfa849789e5d"},
     {file = "mwparserfromhell-0.6.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2b75fae6d01c8fda19dbf127175122d7aa2964ef6454690e6868bbc3d80a7bc1"},
-    {file = "mwparserfromhell-0.6.6-cp312-cp312-win32.whl", hash = "sha256:19e9a4bcd85707c83172405eb2a9a046eff9d38dd7f1a56a5e5ecbbfef4a640a"},
-    {file = "mwparserfromhell-0.6.6-cp312-cp312-win_amd64.whl", hash = "sha256:cdc46c115b2495d4025920b7b30a6885a96d2b797ccc4009bf3cc02940ae55d3"},
     {file = "mwparserfromhell-0.6.6-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:fd05481adc0806f4b8f8f8cb309ec56924b17ce386cb1c2f73919d8a012e6b16"},
     {file = "mwparserfromhell-0.6.6-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:03e03b8bec729af850457d045b04d0c9d3e296ff8bf66b455f754cccb29c3bea"},
     {file = "mwparserfromhell-0.6.6-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1d2422659abb29191a0fa096cf8bead837ac3ecd343065569b2acc7a84ecf866"},
@@ -332,13 +329,13 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "requests-oauthlib"
-version = "1.3.1"
+version = "2.0.0"
 description = "OAuthlib authentication support for Requests."
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+python-versions = ">=3.4"
 files = [
-    {file = "requests-oauthlib-1.3.1.tar.gz", hash = "sha256:75beac4a47881eeb94d5ea5d6ad31ef88856affe2332b9aafb52c6452ccf0d7a"},
-    {file = "requests_oauthlib-1.3.1-py2.py3-none-any.whl", hash = "sha256:2577c501a2fb8d05a304c09d090d6e47c306fef15809d102b327cf8364bddab5"},
+    {file = "requests-oauthlib-2.0.0.tar.gz", hash = "sha256:b3dffaebd884d8cd778494369603a9e7b58d29111bf6b41bdc2dcd87203af4e9"},
+    {file = "requests_oauthlib-2.0.0-py2.py3-none-any.whl", hash = "sha256:7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36"},
 ]
 
 [package.dependencies]
@@ -350,13 +347,13 @@ rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
 
 [[package]]
 name = "urllib3"
-version = "2.2.0"
+version = "2.2.1"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "urllib3-2.2.0-py3-none-any.whl", hash = "sha256:ce3711610ddce217e6d113a2732fafad960a03fd0318c91faa79481e35c11224"},
-    {file = "urllib3-2.2.0.tar.gz", hash = "sha256:051d961ad0c62a94e50ecf1af379c3aba230c66c710493493560c0c223c49f20"},
+    {file = "urllib3-2.2.1-py3-none-any.whl", hash = "sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d"},
+    {file = "urllib3-2.2.1.tar.gz", hash = "sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19"},
 ]
 
 [package.extras]
