@@ -65,7 +65,7 @@ version = "0.4.0"
 python = "^3.11"
 json-cfg = "0.4.2"
 mwparserfromhell = "0.6.6"
-pywikibot = {version = "9.1.1", extras = ["mysql", "mwoauth"]}
+pywikibot = {version = "9.1.3", extras = ["mysql", "mwoauth"]}
 pywikibot-extensions = "23.3.25"
 
 [tool.poetry.scripts]
