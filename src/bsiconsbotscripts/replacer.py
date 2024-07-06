@@ -19,11 +19,7 @@ import pywikibot
 import pywikibot.pagegenerators
 from jsoncfg.config_classes import ConfigJSONObject
 from jsoncfg.value_mappers import require_list, require_string
-from pywikibot.bot import (
-    ExistingPageBot,
-    FollowRedirectPageBot,
-    MultipleSitesBot,
-)
+from pywikibot.bot import ExistingPageBot, MultipleSitesBot
 from pywikibot.textlib import removeDisabledParts
 from pywikibot_extensions.page import Page
 
@@ -147,9 +143,7 @@ def process_site_config(
     return site_config
 
 
-class BSiconsReplacer(
-    MultipleSitesBot, FollowRedirectPageBot, ExistingPageBot
-):
+class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
     """Bot to replace BSicons."""
 
     update_options = {
@@ -157,6 +151,7 @@ class BSiconsReplacer(
         "config": {},
         "local_config": "",
     }
+    use_redirects = False
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize."""
