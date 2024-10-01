@@ -66,7 +66,7 @@ python = "^3.11"
 json-cfg = "0.4.2"
 mwparserfromhell = "0.6.6"
 pywikibot = {version = "9.3.1", extras = ["mysql", "mwoauth"]}
-pywikibot-extensions = "23.3.25"
+pywikibot-extensions = "24.9.21"
 
 [tool.poetry.scripts]
 bsicons-reporter = "bsiconsbotscripts.reporter:main"
