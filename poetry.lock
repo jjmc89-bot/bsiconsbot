@@ -154,6 +154,7 @@ optional = false
 python-versions = "*"
 files = [
     {file = "mwoauth-0.4.0-py3-none-any.whl", hash = "sha256:fed9bc7d6bbabb5f691b918af0ac844e13c9b75d5fa51a898f36d54d798b5fe1"},
+    {file = "mwoauth-0.4.0.tar.gz", hash = "sha256:22e3403e748e70146f8eccc1430fe542c9f9c4ff677eff424a52e644f6d8f7c5"},
 ]
 
 [package.dependencies]
@@ -181,9 +182,12 @@ files = [
     {file = "mwparserfromhell-0.6.6-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:59633d3cc09993af75ced8dfbd6800e1e38e64620851a095575621548448875c"},
     {file = "mwparserfromhell-0.6.6-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:007d0859e5467241b73c6e974df039a074609ce4e2b9df8c2263a8920554d032"},
     {file = "mwparserfromhell-0.6.6-cp311-cp311-win32.whl", hash = "sha256:dbe5976b1b524e26aa2eb71b6219960f2578f56b536c68e0a79deb63e3b7f710"},
+    {file = "mwparserfromhell-0.6.6-cp311-cp311-win_amd64.whl", hash = "sha256:063c1e79befd1f55d77c358e0f5006f5ecf88ddf218ff6af55188d686139330e"},
     {file = "mwparserfromhell-0.6.6-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:910d36bc70e8bea758380e75c12fd47626b295abec9f73a6099d8f937a649e77"},
     {file = "mwparserfromhell-0.6.6-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d2febd92a55a3f19b461833267726cb81429c3d6cb0006ad1691dfa849789e5d"},
     {file = "mwparserfromhell-0.6.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2b75fae6d01c8fda19dbf127175122d7aa2964ef6454690e6868bbc3d80a7bc1"},
+    {file = "mwparserfromhell-0.6.6-cp312-cp312-win32.whl", hash = "sha256:19e9a4bcd85707c83172405eb2a9a046eff9d38dd7f1a56a5e5ecbbfef4a640a"},
+    {file = "mwparserfromhell-0.6.6-cp312-cp312-win_amd64.whl", hash = "sha256:cdc46c115b2495d4025920b7b30a6885a96d2b797ccc4009bf3cc02940ae55d3"},
     {file = "mwparserfromhell-0.6.6-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:fd05481adc0806f4b8f8f8cb309ec56924b17ce386cb1c2f73919d8a012e6b16"},
     {file = "mwparserfromhell-0.6.6-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:03e03b8bec729af850457d045b04d0c9d3e296ff8bf66b455f754cccb29c3bea"},
     {file = "mwparserfromhell-0.6.6-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1d2422659abb29191a0fa096cf8bead837ac3ecd343065569b2acc7a84ecf866"},
@@ -294,17 +298,17 @@ wikitextparser = ["wikitextparser (>=0.47.0)"]
 
 [[package]]
 name = "pywikibot-extensions"
-version = "23.3.25"
+version = "24.9.21"
 description = "Extends the Pywikibot library"
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = "<4.0,>=3.8"
 files = [
-    {file = "pywikibot_extensions-23.3.25-py3-none-any.whl", hash = "sha256:8d660f9525cbfe75978bfa119cb2c22ab984ffd0f84c6fc9a940efabcc2762b6"},
-    {file = "pywikibot_extensions-23.3.25.tar.gz", hash = "sha256:fb8b52001817881e131b28a39c353033cfc7fdd97e97bdc3745fc8bce78228bc"},
+    {file = "pywikibot_extensions-24.9.21-py3-none-any.whl", hash = "sha256:42d9cb670415219f00e9fc644712cdef9563f3997d4529e646b99a2894bedc88"},
+    {file = "pywikibot_extensions-24.9.21.tar.gz", hash = "sha256:580072aafc1572f235efa3a3154885bf5a4b880b9abb998bea53a84b42cd013f"},
 ]
 
 [package.dependencies]
-pywikibot = ">=7.4.0"
+pywikibot = ">=9.3.0"
 
 [[package]]
 name = "requests"
@@ -365,4 +369,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "32d62eefd8290119f5d9ab38c016031aa92488e5f9f665157d8e3923c5f0f3ac"
+content-hash = "52c7dba6dac608900f35ee09bb5f38f22cb0c0585cfc077619bc8775171f6c06"
