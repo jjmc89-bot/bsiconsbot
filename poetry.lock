@@ -265,13 +265,13 @@ rsa = ["cryptography"]
 
 [[package]]
 name = "pywikibot"
-version = "9.3.1"
+version = "9.5.0"
 description = "Python MediaWiki Bot Framework"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "pywikibot-9.3.1-py3-none-any.whl", hash = "sha256:70ede0e5c41a2c51bd31b22ea91f5c3ddb088215fc623d556a903fe9f1facf30"},
-    {file = "pywikibot-9.3.1.tar.gz", hash = "sha256:acf1d47e4d360c4ca36f7cbea25228ad8ee75e39c4aaa02bbbc71538ebc6f9bd"},
+    {file = "pywikibot-9.5.0-py3-none-any.whl", hash = "sha256:4f2e3d8c00bf6410418dc78489a13d139354c832df312f78a693a27d0fffa53f"},
+    {file = "pywikibot-9.5.0.tar.gz", hash = "sha256:6543ac89a750db37a440373ec1cf4cbcd80b05742482ebeb0ee7e90bcfb590ba"},
 ]
 
 [package.dependencies]
@@ -284,10 +284,8 @@ requests = ">=2.21.0"
 [package.extras]
 create-isbn-edition-py = ["isbnlib", "unidecode"]
 eventstreams = ["sseclient (>=0.0.18,<0.0.23)"]
-flake8 = ["darglint2", "flake8 (>=5.0.4)", "flake8-bugbear (!=24.1.17)", "flake8-comprehensions (>=3.13.0)", "flake8-docstrings (>=1.4.0)", "flake8-future-annotations", "flake8-mock-x2", "flake8-no-u-prefixed-strings (>=0.2)", "flake8-print (>=5.0.0)", "flake8-quotes (>=3.3.2)", "flake8-raise", "flake8-tuple (>=0.4.1)", "pep8-naming (==0.13.3)", "pep8-naming (>=0.14.0)", "pydocstyle (>=6.3.0)"]
 google = ["google (>=1.7)"]
 graphviz = ["pydot (>=1.4.1)"]
-hacking = ["hacking", "importlib-metadata (<5.0.0)"]
 html = ["beautifulsoup4 (>=4.7.1)"]
 http = ["fake-useragent (>=1.4.0)"]
 isbn = ["python-stdnum (>=1.19)"]
@@ -372,4 +370,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "52c7dba6dac608900f35ee09bb5f38f22cb0c0585cfc077619bc8775171f6c06"
+content-hash = "96eee0a29b16020ff476070a69e1d059737a4a941994634fb6114df8235c79e2"
