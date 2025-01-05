@@ -1,7 +1,5 @@
 """Replace BSicons."""
 
-# Author : JJMC89
-# License: MIT
 from __future__ import annotations
 
 import argparse
@@ -22,8 +20,9 @@ from jsoncfg.value_mappers import require_list, require_string
 from pywikibot.bot import ExistingPageBot, MultipleSitesBot
 from pywikibot.textlib import removeDisabledParts
 from pywikibot_extensions.page import Page
+from pywikibot_extensions.textlib import FILE_LINK_REGEX
 
-import bsiconsbot
+import bsiconsbot.cli
 import bsiconsbot.textlib
 from bsiconsbot.options_classes import (
     GenToPages,
@@ -84,7 +83,8 @@ def process_local_config(config: ConfigJSONObject) -> LocalConfig:
 
 
 def process_global_config(
-    config: ConfigJSONObject, site: pywikibot.site.APISite
+    config: ConfigJSONObject,
+    site: pywikibot.site.APISite,
 ) -> tuple[
     Iterable[pywikibot.Page], dict[BSiconPage, BSiconPage], LocalConfig
 ]:
@@ -118,14 +118,13 @@ def process_global_config(
 
 
 def process_site_config(
-    config: ConfigJSONObject, site: pywikibot.site.APISite
+    config: ConfigJSONObject,
+    site: pywikibot.site.APISite,
 ) -> SiteConfig:
-    """Process the site config."""
-    file_namespaces = "|".join(site.namespaces.FILE)
     site_config = SiteConfig(
         bs_templates=config.bs_templates(ToBSTemplatesConfig(site)),
         file_regex=re.compile(
-            bsiconsbot.textlib.FILE_LINK_REGEX.format(file_namespaces),
+            FILE_LINK_REGEX.format("|".join(site.namespaces.FILE)),
             flags=re.I | re.X,
         ),
         railway_track_templates=config.railway_track_templates(
@@ -144,7 +143,6 @@ def process_site_config(
 
 
 class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
-    """Bot to replace BSicons."""
 
     update_options = {
         "bsicons_map": {},
@@ -154,14 +152,12 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
     use_redirects = False
 
     def __init__(self, **kwargs: Any) -> None:
-        """Initialize."""
         super().__init__(**kwargs)
         self._config: dict[pywikibot.site.APISite, SiteConfig | None] = {}
         self._disabled_sites: set[pywikibot.site.APISite] = set()
 
     @property
     def site_disabled(self) -> bool:
-        """Return True if the task is disabled on the site."""
         site = self.current_page.site
         if site in self._disabled_sites:
             return True
@@ -184,7 +180,6 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
 
     @property
     def site_config(self) -> SiteConfig | None:
-        """Return the site configuration."""
         site = self.current_page.site
         if site in self._config:
             return self._config[site]
@@ -206,14 +201,12 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
         return self._config[site]
 
     def skip_page(self, page: pywikibot.Page) -> bool:
-        """Sikp the page if it is in userspace."""
         if page.namespace().id in {2, 3}:
             pywikibot.warning(f"{page!r} is in userspace.")
             return True
         return super().skip_page(page)
 
     def treat_page(self) -> None:
-        """Process one page."""
         if not self.site_config or self.site_disabled:
             return
         self.current_page.replacements = set()
@@ -232,11 +225,6 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
         )
 
     def replace_file_links(self, text: str) -> str:
-        """
-        Return text with file links replaced.
-
-        :param text: Article text
-        """
         assert self.site_config is not None
         for match in self.site_config.file_regex.finditer(
             removeDisabledParts(text)
@@ -259,13 +247,9 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
         return text
 
     def replace_gallery_files(
-        self, wikicode: mwparserfromhell.wikicode.Wikicode
+        self,
+        wikicode: mwparserfromhell.wikicode.Wikicode,
     ) -> None:
-        """
-        Replace files in <gallery>.
-
-        :param wikicode: Parsed wikitext
-        """
         for tag in wikicode.ifilter_tags():
             if tag.tag.lower() != "gallery":
                 continue
@@ -289,13 +273,9 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
                 tag.contents = "\n".join(lines) + "\n"  # type: ignore[assignment]  # noqa: E501
 
     def replace_template_files(
-        self, wikicode: mwparserfromhell.wikicode.Wikicode
+        self,
+        wikicode: mwparserfromhell.wikicode.Wikicode,
     ) -> None:
-        """
-        Replace files in templates.
-
-        :param wikicode: Parsed wikitext
-        """
         assert self.site_config is not None
         for tpl in wikicode.ifilter_templates():
             try:
@@ -315,7 +295,8 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
                 self._replace_bs_template_files(tpl, template)
 
     def _replace_routemap_files(
-        self, tpl: mwparserfromhell.nodes.Template
+        self,
+        tpl: mwparserfromhell.nodes.Template,
     ) -> None:
         for param in tpl.params:
             if not re.search(r"^(?:map\d*|\d+)$", str(param.name).strip()):
@@ -345,7 +326,8 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
             param.value = param_value  # type: ignore[assignment]
 
     def _replace_rt_template_files(
-        self, tpl: mwparserfromhell.nodes.Template
+        self,
+        tpl: mwparserfromhell.nodes.Template,
     ) -> None:
         # Written for [[:cs:Template:Železniční trať]].
         for param in tpl.params:
@@ -383,7 +365,9 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
             )
 
     def _replace_bs_template_files(
-        self, tpl: mwparserfromhell.nodes.Template, template: pywikibot.Page
+        self,
+        tpl: mwparserfromhell.nodes.Template,
+        template: pywikibot.Page,
     ) -> None:
         assert self.site_config is not None
         for icon_prefix, templates in self.site_config.bs_templates.items():
@@ -418,7 +402,6 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
 def transcluded_add_generator(
     generator: Iterable[pywikibot.Page],
 ) -> Iterable[pywikibot.Page]:
-    """Add transcluded pages for pages from another generator."""
     seen = set()
     for page in generator:
         yield page
@@ -429,18 +412,13 @@ def transcluded_add_generator(
 
 
 def main(*args: str) -> int:
-    """
-    Process command line arguments and invoke bot.
-
-    :param args: command line arguments
-    """
     local_args = pywikibot.handle_args(args, do_help=False)
     site = pywikibot.Site()
     gen_factory = pywikibot.pagegenerators.GeneratorFactory(site)
     script_args = gen_factory.handle_args(local_args)
     parser = argparse.ArgumentParser(
         description=__doc__,
-        epilog=bsiconsbot.PYWIKIBOT_GLOBAL_HELP,
+        epilog=bsiconsbot.cli.PYWIKIBOT_GLOBAL_HELP,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         allow_abbrev=False,
     )

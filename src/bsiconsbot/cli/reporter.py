@@ -17,14 +17,13 @@ import pywikibot.pagegenerators
 from jsoncfg.value_mappers import require_bool
 from pywikibot_extensions.page import Page
 
-import bsiconsbot
+import bsiconsbot.cli
 from bsiconsbot.options_classes import TitleToPage
 from bsiconsbot.page import BSiconPage, load_config
 from bsiconsbot.textlib import get_headers
 
 
 def get_page_from_size(page: pywikibot.Page) -> pywikibot.Page:
-    """Return a page based on the current page size."""
     i = 1
     title = page.title()
     while True:
@@ -38,12 +37,6 @@ def get_page_from_size(page: pywikibot.Page) -> pywikibot.Page:
 
 
 def save_list(page_list: list[pywikibot.Page], page: Page) -> None:
-    """
-    Write the given page_list to the given page.
-
-    :param page_list: List of pages to output
-    :param page: Page to save to
-    """
     list_text = ""
     for item in sorted(page_list):
         list_text += f"\n# {item.title(as_link=True, textlink=True)}"
@@ -54,7 +47,6 @@ def save_list(page_list: list[pywikibot.Page], page: Page) -> None:
 
 
 def _handle_hidden(data: dict[str, Any]) -> None:
-    """Fill in placeholders for hidden keys."""
     for prop in ("comment", "user"):
         if f"{prop}hidden" in data:
             data[prop] = f"({prop} hidden)"
@@ -69,7 +61,6 @@ def output_log(
     prefix: str,
     bsicon_template_title: str = "bsq2",
 ) -> None:
-    """Write logevents to a page."""
     log_page = Page(
         site,
         f"{prefix}/{logtype}/{start.strftime('%Y-%m')}",
@@ -130,7 +121,6 @@ def output_move_log(
     end: datetime.datetime,
     prefix: str,
 ) -> None:
-    """Write move logevents to a page."""
     logtype = "move"
     log_page = Page(
         site,
@@ -207,7 +197,6 @@ def output_edits(
     end: datetime.datetime,
     prefix: str,
 ) -> None:
-    """Write edits to a page."""
     changes_page = Page(
         site,
         f"{prefix}/{start.strftime('%Y-%m')}",
@@ -264,17 +253,12 @@ def output_edits(
 
 
 def main(*args: str) -> int:
-    """
-    Process command line arguments and invoke bot.
-
-    :param args: command line arguments
-    """
     local_args = pywikibot.handle_args(args, do_help=False)
     site = pywikibot.Site()
     title_to_page = TitleToPage(site)
     parser = argparse.ArgumentParser(
         description=__doc__,
-        epilog=bsiconsbot.PYWIKIBOT_GLOBAL_HELP,
+        epilog=bsiconsbot.cli.PYWIKIBOT_GLOBAL_HELP,
         formatter_class=argparse.RawDescriptionHelpFormatter,
         allow_abbrev=False,
     )

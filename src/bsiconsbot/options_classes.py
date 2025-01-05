@@ -1,5 +1,3 @@
-"""Classes for working with commmand line arguments and json-cfg."""
-
 from __future__ import annotations
 
 from typing import Any
@@ -14,14 +12,12 @@ from bsiconsbot.page import load_config
 
 
 class TitleToPage:
-    """Convert title to a page."""
+    """Convert title to a Page."""
 
     def __init__(self, site: pywikibot.site.APISite) -> None:
-        """Initialize."""
         self.site = site
 
     def __call__(self, title: str) -> Page:
-        """Make instance behave as a simple function."""
         return Page(self.site, title)
 
 
@@ -34,15 +30,13 @@ class _SiteJSONValueMapper(JSONValueMapper):
 
 
 class GenToPages(_SiteJSONValueMapper):
-    """Convert page generators to a set of pages."""
+    """Convert page generators to a set of Page."""
 
     def __init__(self, site: pywikibot.site.APISite) -> None:
-        """Initialize."""
         super().__init__(site)
         self.gen_factory = pywikibot.pagegenerators.GeneratorFactory(site)
 
     def __call__(self, arg: object) -> set[pywikibot.Page]:
-        """Make instance behave as a simple function."""
         if not isinstance(arg, list):
             raise TypeError(f"{arg!r} is not an array.")
         for item in arg:
@@ -57,7 +51,6 @@ class ToReplacementMap(_SiteJSONValueMapper):
     """Convert to BSicons replacement map."""
 
     def __call__(self, arg: object) -> dict[str, str]:
-        """Make instance behave as a simple function."""
         if isinstance(arg, dict):
             replacement_map = arg
         elif isinstance(arg, str):
@@ -75,7 +68,6 @@ class ToBSTemplatesConfig(_SiteJSONValueMapper):
     """Convert to BS temapltes config."""
 
     def __call__(self, arg: object) -> dict[str, frozenset[pywikibot.Page]]:
-        """Make instance behave as a simple function."""
         if isinstance(arg, str):
             value = {"": [arg]}
         elif isinstance(arg, list):
@@ -100,7 +92,6 @@ class ToTemplatesConfig(_SiteJSONValueMapper):
     """Convert to templates config."""
 
     def __call__(self, value: object) -> frozenset[pywikibot.Page]:
-        """Make instance behave as a simple function."""
         if isinstance(value, str):
             value = [value]
         elif not isinstance(value, list):

@@ -74,11 +74,10 @@ repos:
           - 3.9.0
         additional_dependencies:
           - flake8-bugbear
-          - flake8-docstrings
           - flake8-typing-imports
           - pep8-naming
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.14.0
+    rev: v1.14.1
     hooks:
       - id: mypy
         args: []
