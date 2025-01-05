@@ -6,10 +6,9 @@ import argparse
 import json
 import re
 from collections.abc import Iterable
-from dataclasses import dataclass
 from itertools import chain
 from re import Pattern
-from typing import Any, TypedDict
+from typing import Any, NamedTuple, TypedDict
 
 import jsoncfg
 import mwparserfromhell
@@ -41,18 +40,13 @@ ROUTEMAP_BSICON = re.compile(
 
 
 class LocalConfig(TypedDict):
-    """Local configuration."""
-
     bs_templates: dict[str, list[str]]
     railway_track_templates: list[str]
     routemap_templates: list[str]
     summary_prefix: str
 
 
-@dataclass(frozen=True)
-class SiteConfig:
-    """Site configuration."""
-
+class SiteConfig(NamedTuple):
     bs_templates: dict[str, set[pywikibot.Page]]
     file_regex: Pattern[str]
     railway_track_templates: set[pywikibot.Page]
@@ -60,10 +54,7 @@ class SiteConfig:
     summary_prefix: str
 
 
-@dataclass(frozen=True)
-class Replacement:
-    """A BSicon replacement."""
-
+class Replacement(NamedTuple):
     old: BSiconPage
     new: BSiconPage
 
