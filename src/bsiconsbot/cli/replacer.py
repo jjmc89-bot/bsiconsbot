@@ -261,7 +261,7 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
                         Replacement(current_icon, new_icon)
                     )
             if self.current_page.replacements:
-                tag.contents = "\n".join(lines) + "\n"  # type: ignore[assignment]  # noqa: E501
+                tag.contents = "\n".join(lines) + "\n"
 
     def replace_template_files(
         self,
@@ -314,7 +314,7 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
                 self.current_page.replacements.add(
                     Replacement(current_icon, new_icon)
                 )
-            param.value = param_value  # type: ignore[assignment]
+            param.value = param_value
 
     def _replace_rt_template_files(
         self,
@@ -350,7 +350,7 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
                     continue
             else:
                 replacement = new_icon.name
-            param.value = str(param.value).replace(param_value, replacement)  # type: ignore[assignment]  # noqa: E501
+            param.value = str(param.value).replace(param_value, replacement)
             self.current_page.replacements.add(
                 Replacement(current_icon, new_icon)
             )
@@ -382,7 +382,7 @@ class BSiconsReplacer(MultipleSitesBot, ExistingPageBot):
                     continue
                 # The replacement must have the same prefix.
                 if new_icon.name[: len(prefix)] == prefix:
-                    param.value = str(param.value).replace(  # type: ignore[assignment]  # noqa: E501
+                    param.value = str(param.value).replace(
                         param_value, new_icon.name[len(prefix) :]  # noqa: E203
                     )
                     self.current_page.replacements.add(
