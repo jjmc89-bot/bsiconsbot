@@ -18,10 +18,10 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Wiki",
 ]
 dependencies = [
-    "json-cfg (==0.4.2)",
-    "mwparserfromhell (==0.6.6)",
-    "pywikibot [mysql, mwoauth] (==10.0.0)",
-    "pywikibot-extensions (==24.9.21)",
+    "json-cfg == 0.4.2",
+    "mwparserfromhell == 0.7.2",
+    "pywikibot [mysql, mwoauth] == 10.3.2",
+    "pywikibot-extensions == 24.9.21",
 ]
 description = "BSicons bot"
 keywords = [ "bot", "bsicon", "mediawiki" ]
