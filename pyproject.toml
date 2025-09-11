@@ -20,7 +20,7 @@ classifiers = [
 dependencies = [
     "json-cfg == 0.4.2",
     "mwparserfromhell == 0.7.2",
-    "pywikibot [mysql, mwoauth] == 10.3.2",
+    "pywikibot [mysql, mwoauth] == 10.4.0",
     "pywikibot-extensions == 24.9.21",
 ]
 description = "BSicons bot"
@@ -28,7 +28,7 @@ keywords = [ "bot", "bsicon", "mediawiki" ]
 license = "MIT"
 name = "bsiconsbot"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 version = "25.1.5"
 
 [project.scripts]
@@ -40,7 +40,7 @@ source = "https://github.com/jjmc89-bot/bsiconsbot"
 
 
 [tool.black]
-target-version = ["py311"]
+target-version = ["py313"]
 line-length = 79  # default: 88
 
 
@@ -49,11 +49,11 @@ add_imports = ["from __future__ import annotations"]
 atomic = true
 lines_after_imports = 2
 profile = "black"
-py_version = 311
+py_version = 313
 
 
 [tool.mypy]
-python_version = 3.11
+python_version = 3.13
 enable_error_code = [
     "ignore-without-code",
 ]
@@ -72,4 +72,4 @@ ignore_missing_imports = true
 [tool.poetry]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.13"

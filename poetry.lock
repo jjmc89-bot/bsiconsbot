@@ -264,14 +264,14 @@ tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
 name = "pymysql"
-version = "1.1.1"
+version = "1.1.2"
 description = "Pure Python MySQL Driver"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "PyMySQL-1.1.1-py3-none-any.whl", hash = "sha256:4de15da4c61dc132f4fb9ab763063e693d521a80fd0e87943b9a453dd4c19d6c"},
-    {file = "pymysql-1.1.1.tar.gz", hash = "sha256:e127611aaf2b417403c60bf4dc570124aeb4a57f5f37b8e95ae399a42f904cd0"},
+    {file = "pymysql-1.1.2-py3-none-any.whl", hash = "sha256:e6b1d89711dd51f8f74b1631fe08f039e7d76cf67a42a323d3178f0f25762ed9"},
+    {file = "pymysql-1.1.2.tar.gz", hash = "sha256:4961d3e165614ae65014e361811a724e2044ad3ea3739de9903ae7c21f539f03"},
 ]
 
 [package.extras]
@@ -280,14 +280,14 @@ rsa = ["cryptography"]
 
 [[package]]
 name = "pywikibot"
-version = "10.3.2"
+version = "10.4.0"
 description = "Python MediaWiki Bot Framework"
 optional = false
 python-versions = ">=3.8.0"
 groups = ["main"]
 files = [
-    {file = "pywikibot-10.3.2-py3-none-any.whl", hash = "sha256:366ff1b02bba8c77fca04fff9142b5190dee0db37b6b5962522b1f057df1bc36"},
-    {file = "pywikibot-10.3.2.tar.gz", hash = "sha256:de605c1a151e2a081d39d85851ae1bc2d848a4705d0918b5d13fa89c785abed9"},
+    {file = "pywikibot-10.4.0-py3-none-any.whl", hash = "sha256:d905fd682bfaad16f5d32e328cd8f8b34dfe1be63757727007b72f3367c81c53"},
+    {file = "pywikibot-10.4.0.tar.gz", hash = "sha256:6690ffcd31d40d1fe8c0ff52ed64e2a59a0626e1ddb0e46cfbbc36deed48af17"},
 ]
 
 [package.dependencies]
@@ -331,14 +331,14 @@ pywikibot = ">=9.3.0"
 
 [[package]]
 name = "requests"
-version = "2.32.4"
+version = "2.32.5"
 description = "Python HTTP for Humans."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "requests-2.32.4-py3-none-any.whl", hash = "sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c"},
-    {file = "requests-2.32.4.tar.gz", hash = "sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422"},
+    {file = "requests-2.32.5-py3-none-any.whl", hash = "sha256:2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6"},
+    {file = "requests-2.32.5.tar.gz", hash = "sha256:dbba0bac56e100853db0ea71b82b4dfd5fe2bf6d3754a8893c3af500cec7d7cf"},
 ]
 
 [package.dependencies]
@@ -390,5 +390,5 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.11"
-content-hash = "c27b427b9f6eb293c103b7103ff24df40d4fede9a7a5b44051a1847379df3efd"
+python-versions = "^3.13"
+content-hash = "de398d221abd02322cc9055fc03fd1e3f45c64703cdcf13e2212823b0821b530"
