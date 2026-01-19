@@ -31,7 +31,6 @@ from bsiconsbot.options_classes import (
 )
 from bsiconsbot.page import BSiconPage, load_config
 
-
 HTML_COMMENT = re.compile(r"<!--.*?-->", flags=re.S)
 ROUTEMAP_BSICON = re.compile(
     r"(?=((?:\n|! !|!~|\\)[ \t]*)((?:[^\\~\n]|~(?!~))+?)([ \t]*"
