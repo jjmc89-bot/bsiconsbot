@@ -20,8 +20,8 @@ classifiers = [
 dependencies = [
     "json-cfg == 0.4.2",
     "mwparserfromhell == 0.7.2",
-    "pywikibot [mysql, mwoauth] == 10.4.0",
-    "pywikibot-extensions == 24.9.21",
+    "pywikibot [mysql, mwoauth] == 11.8.0",
+    "pywikibot-extensions == 26.4.9",
 ]
 description = "BSicons bot"
 keywords = [ "bot", "bsicon", "mediawiki" ]
